@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="nl" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +7,23 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
+[data-theme="dark"]{
   --bg:#0f1117;--surface:#181c27;--surface2:#1e2333;
   --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
-  --text:#e8eaf0;--muted:#6b7280;
+  --text:#e8eaf0;--muted:#6b7280;--text-inv:#0f1117;
   --accent:#4f8ef7;--green:#34d399;--warn:#f59e0b;--danger:#f87171;
   --radius:12px;--radius-sm:8px;
 }
+[data-theme="light"]{
+  --bg:#f0f2f7;--surface:#ffffff;--surface2:#f5f7fb;
+  --border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.12);
+  --text:#1a1d27;--muted:#8a93a8;--text-inv:#ffffff;
+  --accent:#2d6ef5;--green:#0ea870;--warn:#d97706;--danger:#dc2626;
+  --radius:12px;--radius-sm:8px;
+}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-#view-tv{display:none;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .25s,color .25s;}
+#view-tv{display:none;flex-direction:column;height:100vh;padding:12px;gap:10px;overflow:hidden;}
 #view-admin{display:none;}
 #view-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;}
 #view-login{display:none;align-items:center;justify-content:center;min-height:100vh;}
@@ -57,7 +64,10 @@ header{display:flex;align-items:center;justify-content:space-between;background:
 .admin-toggle{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);padding:6px 12px;border-radius:6px;border:0.5px solid var(--border2);background:transparent;cursor:pointer;}
 .admin-toggle:hover{color:var(--text);}
 
-main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+main{display:grid;grid-template-columns:1.1fr 1.4fr 1fr;grid-template-rows:1fr 1fr;gap:10px;flex:1;min-height:0;}
+.card{overflow:hidden;display:flex;flex-direction:column;}
+.card-body{flex:1;min-height:0;overflow:hidden;}
+.team-scroll,.plan-scroll,.taken-scroll,.dl-compact,.verg-compact{overflow-y:auto;max-height:100%;display:flex;flex-direction:column;gap:5px;}
 .card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:16px 18px;}
 .s2{grid-column:span 2;}.s3{grid-column:span 3;}
 .card-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
@@ -264,7 +274,10 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
       <div class="clock" id="clk">--:--</div>
       <div class="date-str" id="dat"></div>
     </div>
-    <button class="admin-toggle" onclick="openAdmin()">⚙ beheer</button>
+    <div style="display:flex;gap:8px;align-items:center;">
+        <button style="font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);padding:5px 11px;border-radius:6px;border:0.5px solid var(--border2);background:transparent;cursor:pointer;" onclick="toggleTheme()" id="theme-btn">☀ Light</button>
+        <button class="admin-toggle" onclick="openAdmin()">⚙ beheer</button>
+      </div>
   </div>
 </header>
 <main>
@@ -315,7 +328,6 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
   <div class="admin-tabs">
     <button class="tab-btn active" onclick="switchTab('planning')">Planning 2 weken</button>
     <button class="tab-btn" onclick="switchTab('taken')">Teamtaken</button>
-    <button class="tab-btn" onclick="switchTab('opmerkingen')">Mededelingen</button>
     <button class="tab-btn" onclick="switchTab('team')">Teamleden</button>
     <button class="tab-btn" onclick="switchTab('deadlines')">Deadlines</button>
     <button class="tab-btn" onclick="switchTab('vergad')">Vergaderingen</button>
@@ -335,9 +347,6 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
 
   <div class="tab-panel" id="tab-taken">
     <div class="admin-section"><h2>Teamtaken deze week</h2><div id="admin-taken"></div><button class="add-btn" onclick="addTaak()">+ Taak toevoegen</button></div>
-  </div>
-  <div class="tab-panel" id="tab-opmerkingen">
-    <div class="admin-section"><h2>Mededelingen</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Permanente mededelingen voor het hele team.</p><div id="admin-opm"></div><button class="add-btn" onclick="addOpm()">+ Mededeling toevoegen</button></div>
   </div>
   <div class="tab-panel" id="tab-team">
     <div class="admin-section"><h2>Teamleden &amp; standaard aanwezigheid</h2><div id="admin-team"></div><button class="add-btn" onclick="addLid()">+ Teamlid toevoegen</button></div>
@@ -503,6 +512,22 @@ function setSyncStatus(s){
   else{dot.classList.add('err');lbl.textContent='offline';}
 }
 
+
+/* THEME */
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute('data-theme');
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('ob-theme',next);
+  const btn=document.getElementById('theme-btn');
+  if(btn)btn.textContent=next==='dark'?'☀ Light':'☾ Dark';
+}
+function initTheme(){
+  const saved=localStorage.getItem('ob-theme')||'dark';
+  document.documentElement.setAttribute('data-theme',saved);
+  const btn=document.getElementById('theme-btn');
+  if(btn)btn.textContent=saved==='dark'?'☀ Light':'☾ Dark';
+}
 /* ══ HASH ══ */
 async function hashPw(pw){
   const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pw));
@@ -526,6 +551,7 @@ function applyData(d){
   vergad=d.vergad||DEF.vergad;
 }
 async function initDashboard(){
+  initTheme();
   try{
     const data=await jbLoad();
     applyData(data);
@@ -534,7 +560,7 @@ async function initDashboard(){
     setSyncStatus('err');
   }
   hideAll();
-  document.getElementById('view-tv').style.display='block';
+  document.getElementById('view-tv').style.display='flex';
   updateClock();
   renderAll();
   if(refreshTimer)clearInterval(refreshTimer);
@@ -712,11 +738,11 @@ function showAdmin(){
 }
 function closeAdmin(){
   hideAll();
-  document.getElementById('view-tv').style.display='block';
+  document.getElementById('view-tv').style.display='flex';
   renderAll();
 }
 function switchTab(tab){
-  const tabs=['planning','taken','opmerkingen','team','deadlines','vergad'];
+  const tabs=['planning','taken','team','deadlines','vergad'];
   document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',tabs[i]===tab));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
