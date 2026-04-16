@@ -64,7 +64,7 @@ header{display:flex;align-items:center;justify-content:space-between;background:
 .admin-toggle{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);padding:6px 12px;border-radius:6px;border:0.5px solid var(--border2);background:transparent;cursor:pointer;}
 .admin-toggle:hover{color:var(--text);}
 
-main{display:grid;grid-template-columns:1.35fr 1.25fr 0.85fr;grid-template-rows:1fr 1fr;gap:10px;flex:1;min-height:0;}
+main{display:grid;grid-template-columns:1.1fr 1.3fr 0.85fr 0.85fr;grid-template-rows:1fr 1fr;gap:10px;flex:1;min-height:0;}
 .card{overflow:hidden;display:flex;flex-direction:column;}
 .card-body{flex:1;min-height:0;overflow:hidden;}
 .team-scroll{overflow-y:auto;flex:1;display:grid;grid-template-columns:1fr 1fr;gap:4px;align-content:start;min-height:0;}
@@ -283,10 +283,12 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
 </header>
 <main>
   <!-- Team -->
-  <div class="card" style="grid-row:span 2;">
-    <div class="card-label">Team <span id="aanwezig-count" style="color:var(--green);font-family:'DM Mono',monospace;font-size:10px;"></span></div>
-    <div id="week-nav-tv" style="margin-bottom:6px;"></div>
-    <div class="team-scroll" id="teamgrid"></div>
+  <div class="card" style="grid-row:span 2;display:flex;flex-direction:column;gap:0;">
+    <div class="card-label" style="margin-bottom:6px;">Team
+      <span id="loc-teller" style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;"></span>
+    </div>
+    <div id="week-nav-tv" style="margin-bottom:6px;flex-shrink:0;"></div>
+    <div class="team-scroll" id="teamgrid" style="flex:1;min-height:0;"></div>
   </div>
 
   <!-- Dagplanning -->
@@ -303,7 +305,7 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
 
   <!-- Taken -->
   <div class="card">
-    <div class="card-label">Teamtaken deze week <button class="reset-btn" onclick="resetTaken()">↺ reset week</button></div>
+    <div class="card-label">Teamtaken <button class="reset-btn" onclick="resetTaken()">↺ reset</button></div>
     <div class="task-list" id="takenlijst"></div>
   </div>
 
@@ -311,6 +313,12 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
   <div class="card">
     <div class="card-label">Vergaderingen vandaag</div>
     <div class="verg-row" id="vergrow"></div>
+  </div>
+
+  <!-- Projecten -->
+  <div class="card" style="grid-row:span 2;">
+    <div class="card-label">Lopende projecten</div>
+    <div id="projecten-list" style="display:flex;flex-direction:column;gap:6px;overflow-y:auto;flex:1;min-height:0;"></div>
   </div>
 </main>
 <footer id="footer-ts"></footer>
@@ -329,6 +337,7 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
   <div class="admin-tabs">
     <button class="tab-btn active" onclick="switchTab('planning')">Planning 2 weken</button>
     <button class="tab-btn" onclick="switchTab('taken')">Teamtaken</button>
+    <button class="tab-btn" onclick="switchTab('projecten')">Projecten</button>
     <button class="tab-btn" onclick="switchTab('team')">Teamleden</button>
     <button class="tab-btn" onclick="switchTab('deadlines')">Deadlines</button>
     <button class="tab-btn" onclick="switchTab('vergad')">Vergaderingen</button>
@@ -349,6 +358,15 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
   <div class="tab-panel" id="tab-taken">
     <div class="admin-section"><h2>Teamtaken deze week</h2><div id="admin-taken"></div><button class="add-btn" onclick="addTaak()">+ Taak toevoegen</button></div>
   </div>
+  <div class="tab-panel" id="tab-projecten">
+    <div class="admin-section">
+      <h2>Lopende projecten</h2>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Voeg projecten toe met naam, verantwoordelijke en voortgang (0-100%).</p>
+      <div id="admin-projecten"></div>
+      <button class="add-btn" onclick="addProject()">+ Project toevoegen</button>
+    </div>
+  </div>
+
   <div class="tab-panel" id="tab-team">
     <div class="admin-section"><h2>Teamleden &amp; standaard aanwezigheid</h2><div id="admin-team"></div><button class="add-btn" onclick="addLid()">+ Teamlid toevoegen</button></div>
   </div>
@@ -476,7 +494,7 @@ const DEF={
 };
 
 /* ══ STATE ══ */
-let team=[],taken=[],opmerkingen=[],planning={},dagOverrides={},deadlines=[],vergad=[];
+let team=[],taken=[],opmerkingen=[],planning={},dagOverrides={},deadlines=[],vergad=[],projecten=[];
 let activeDate=new Date();
 let isAdmin=false;
 let planWeek=0; // 0=deze week, 1=volgende week
@@ -550,6 +568,7 @@ function applyData(d){
   dagOverrides=d.dagOverrides||{};
   deadlines=d.deadlines||DEF.deadlines;
   vergad=d.vergad||DEF.vergad;
+  projecten=d.projecten||[];
 }
 async function initDashboard(){
   initTheme();
@@ -576,7 +595,7 @@ async function autoRefresh(){
   }catch(e){setSyncStatus('err');}
   updateClock();
 }
-function renderAll(){renderWeekNav();renderTeam();renderDagPlan();renderDeadlines();renderTaken();renderVergad();}
+function renderAll(){renderWeekNav();renderTeam();renderDagPlan();renderDeadlines();renderTaken();renderVergad();renderProjecten();}
 
 /* ══ CLOCK ══ */
 function updateClock(){
@@ -639,19 +658,38 @@ function getTeamStatusVoorDag(datum){
 function renderTeam(){
   const statussen=getTeamStatusVoorDag(activeDate);
   const ac=statussen.filter(s=>s.aan).length;
+  const nKantoor=statussen.filter(s=>s.aan&&s.loc==='kantoor').length;
+  const nThuis=statussen.filter(s=>s.aan&&s.loc==='thuis').length;
+  const nAfwezig=statussen.filter(s=>!s.aan).length;
   document.getElementById('aanwezig-count').textContent=ac+'/'+team.length;
-  const isHvd=isVandaag(activeDate);
+  const teller=document.getElementById('loc-teller');
+  if(teller) teller.innerHTML=
+    (nKantoor?`<span style="color:var(--accent);">&#9679; ${nKantoor} kantoor</span>&nbsp;&nbsp;`:'') +
+    (nThuis?`<span style="color:#a78bfa;">&#9679; ${nThuis} thuis</span>&nbsp;&nbsp;`:'') +
+    (nAfwezig?`<span style="color:var(--muted);">&#9679; ${nAfwezig} afwezig</span>`:'');
+
+  // Week stipjes: toon ma-vr aanwezigheid voor activeDate-week
+  const ma=getMaandag(activeDate);
+  const weekDagen=Array.from({length:5},(_,i)=>{const d=new Date(ma);d.setDate(ma.getDate()+i);return d;});
+
   document.getElementById('teamgrid').innerHTML=team.map((m,mi)=>{
     const s=statussen[mi];
     const dotCls=!s.aan?'avail-no':(s.av==='nee'?'avail-no':s.av==='beperkt'?'avail-beperkt':'avail-yes');
     const avlbl=!s.aan?'afwezig':s.av==='nee'?'niet beschikbaar':s.av==='beperkt'?'beperkt':'beschikbaar';
     const loclbl=!s.aan?'afwezig':s.loc;
     const loccls=!s.aan?'loc-afwezig':(s.loc==='thuis'?'loc-thuis':'loc-kantoor');
+    // Week stipjes
+    const stipjes=weekDagen.map(d=>{
+      const ws=getTeamStatusVoorDag(d)[mi];
+      const isAct=datumKey(d)===datumKey(activeDate);
+      const kleur=!ws.aan?'#374151':(ws.loc==='thuis'?'#a78bfa':'var(--accent)');
+      return `<div style="width:${isAct?'8px':'6px'};height:${isAct?'8px':'6px'};border-radius:50%;background:${kleur};opacity:${ws.aan?1:0.35};border:${isAct?'1.5px solid var(--text)':'none'};"></div>`;
+    }).join('');
     return`<div class="member-row${s.aan?'':' absent'}" title="${m.n} — ${m.r} — ${loclbl} — ${avlbl}">
       <div class="avatar-sm ${m.av||'av-b'}">${m.i}</div>
       <div style="flex:1;min-width:0;">
         <div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.n}</div>
-        <div style="font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.r}</div>
+        <div style="display:flex;gap:3px;align-items:center;margin-top:3px;">${stipjes}</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;">
         <span class="loc-badge ${loccls}" style="font-size:8px;">${loclbl}</span>
@@ -717,6 +755,32 @@ function renderTaken(){
 }
 function resetTaken(){if(!isAdmin)return;taken.forEach(t=>t.done=false);renderTaken();}
 
+/* ══ PROJECTEN ══ */
+function renderProjecten(){
+  const el=document.getElementById('projecten-list');
+  if(!el)return;
+  if(!projecten.length){
+    el.innerHTML=`<span style="font-size:12px;color:var(--muted);font-style:italic;">Geen lopende projecten</span>`;
+    return;
+  }
+  el.innerHTML=projecten.map(p=>{
+    const pct=Math.min(100,Math.max(0,p.pct||0));
+    const statusKleur=pct>=100?'var(--green)':pct>60?'var(--accent)':pct>30?'var(--warn)':'var(--danger)';
+    const statusTxt=pct>=100?'Afgerond':pct>60?'Op schema':pct>30?'In uitvoering':'Opgestart';
+    return`<div style="padding:8px 10px;border-radius:7px;border:0.5px solid var(--border);background:var(--surface2);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+        <span style="font-size:12px;font-weight:500;">${esc(p.naam)}</span>
+        <span style="font-size:9px;padding:1px 6px;border-radius:5px;background:${statusKleur}22;color:${statusKleur};">${statusTxt}</span>
+      </div>
+      ${p.wie?`<div style="font-size:10px;color:var(--muted);margin-bottom:5px;">${esc(p.wie)}</div>`:''}
+      <div style="background:var(--border2);border-radius:3px;height:5px;overflow:hidden;">
+        <div style="height:100%;width:${pct}%;background:${statusKleur};border-radius:3px;transition:width .3s;"></div>
+      </div>
+      <div style="font-size:9px;color:var(--muted);margin-top:3px;text-align:right;">${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
 /* ══ LOGIN ══ */
 function openAdmin(){
   if(isAdmin){showAdmin();return;}
@@ -747,7 +811,7 @@ function closeAdmin(){
   renderAll();
 }
 function switchTab(tab){
-  const tabs=['planning','taken','team','deadlines','vergad'];
+  const tabs=['planning','taken','projecten','team','deadlines','vergad'];
   document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',tabs[i]===tab));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
@@ -854,6 +918,25 @@ function setDagOvr(key,mi,field,val){
   dagOverrides[key][mi][field]=val;
   renderAdminPlanning();
 }
+
+/* ══ PROJECTEN ADMIN ══ */
+function renderAdminProjecten(){
+  const STATUSSEN=['Opgestart','In uitvoering','Op schema','Afgerond'];
+  document.getElementById('admin-projecten').innerHTML=projecten.map((p,i)=>
+    `<div style="display:grid;grid-template-columns:1fr 120px 80px 50px auto;gap:8px;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border);">
+      <input class="ai" value="${esc(p.naam)}" placeholder="Projectnaam" oninput="projecten[${i}].naam=this.value">
+      <input class="ai sm" value="${esc(p.wie)}" placeholder="Verantwoordelijke" oninput="projecten[${i}].wie=this.value">
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <input type="range" min="0" max="100" step="5" value="${p.pct||0}" oninput="projecten[${i}].pct=+this.value;this.nextElementSibling.textContent=this.value+'%'" style="width:100%;accent-color:var(--accent);">
+        <span style="font-size:10px;color:var(--muted);text-align:center;">${p.pct||0}%</span>
+      </div>
+      <div style="width:40px;height:40px;border-radius:50%;border:3px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;">${p.pct||0}%</div>
+      <button class="del-btn" onclick="delProject(${i})">×</button>
+    </div>`
+  ).join('');
+}
+function addProject(){projecten.push({naam:'Nieuw project',wie:'',pct:0});renderAdminProjecten();}
+function delProject(i){projecten.splice(i,1);renderAdminProjecten();}
 
 /* ══ TAKEN ADMIN ══ */
 function renderAdminTaken(){
@@ -976,7 +1059,7 @@ async function saveAll(){
   const btn=document.getElementById('save-btn');
   btn.disabled=true;btn.textContent='Publiceren...';
   try{
-    await jbSave({team,taken,opmerkingen,planning,dagOverrides,deadlines,vergad});
+    await jbSave({team,taken,opmerkingen,planning,dagOverrides,deadlines,vergad,projecten});
     renderAdminDL();
     const msg=document.getElementById('save-msg');
     msg.textContent='✓ Gepubliceerd om '+new Date().toLocaleTimeString('nl',{hour:'2-digit',minute:'2-digit'});
