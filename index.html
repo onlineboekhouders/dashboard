@@ -422,7 +422,7 @@ const DEF={
 };
 
 /* ══ STATE ══ */
-let cfg={apiKey:'',binId:'',pwHash:''};
+let cfg={apiKey:'$2a$10$BtHZ/Eb32yTpLPLAodwcUOSh.KFe8/iDuO8PRwyUJVPBPVI1/2PWi',binId:'69e0d7c8aaba8821970682e4',pwHash:'90999ebb18d79e32a1f708c35afc621ee0b920908c2cb923fa254f505ecc8f7e'};
 let team=[],taken=[],opmerkingen=[],deadlines=[],vergad=[];
 let activeDay=(new Date().getDay()+6)%7;
 if(activeDay>4)activeDay=0;
@@ -799,18 +799,8 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;'
 
 /* ══ BOOTSTRAP ══ */
 (function(){
-  const saved=localStorage.getItem('ob-cfg');
-  if(saved){
-    try{
-      cfg=JSON.parse(saved);
-      if(cfg.apiKey&&cfg.binId){
-        initDashboard();
-        return;
-      }
-    }catch(e){}
-  }
-  hideAll();
-  document.getElementById('view-setup').style.display='block';
+  // credentials zijn ingebakken, direct dashboard laden
+  initDashboard();
 })();
 </script>
 </body>
