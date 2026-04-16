@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Boekhouders BV — Team Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1117;--surface:#181c27;--surface2:#1e2333;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --text:#e8eaf0;--muted:#6b7280;
+  --accent:#4f8ef7;--green:#34d399;--warn:#f59e0b;--danger:#f87171;
+  --radius:12px;--radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+#view-tv{display:block;}
+#view-admin{display:none;}
+body.admin #view-tv{display:none;}
+body.admin #view-admin{display:block;}
+
+/* ── SYNC INDICATOR ── */
+.sync-bar{display:flex;align-items:center;gap:6px;font-size:10px;font-family:'DM Mono',monospace;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
+.sync-dot.ok{background:var(--green);}
+.sync-dot.busy{background:var(--warn);animation:pulse 1s infinite;}
+.sync-dot.err{background:var(--danger);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* ── TV ── */
+.tv-wrap{padding:16px;display:grid;grid-template-rows:auto 1fr auto;gap:14px;min-height:100vh;}
+header{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:14px 22px;}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-mark{width:36px;height:36px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:#fff;}
+.company-name{font-size:16px;font-weight:500;}
+.month-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;padding:3px 11px;border-radius:20px;margin-left:12px;}
+.badge-red{background:rgba(248,113,113,.15);color:#fca5a5;border:0.5px solid rgba(248,113,113,.3);}
+.badge-amber{background:rgba(245,158,11,.15);color:#fcd34d;border:0.5px solid rgba(245,158,11,.3);}
+.badge-green{background:rgba(52,211,153,.15);color:#6ee7b7;border:0.5px solid rgba(52,211,153,.3);}
+.hdr-right{display:flex;align-items:center;gap:16px;}
+.clock{font-family:'DM Mono',monospace;font-size:28px;font-weight:500;letter-spacing:.04em;}
+.date-str{font-size:12px;color:var(--muted);margin-top:2px;text-align:right;}
+.admin-toggle{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);padding:6px 12px;border-radius:6px;border:0.5px solid var(--border2);background:transparent;cursor:pointer;transition:all .15s;}
+.admin-toggle:hover{color:var(--text);}
+
+main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:16px 18px;}
+.s2{grid-column:span 2;}
+.s3{grid-column:span 3;}
+.card-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+
+.daynav{display:flex;gap:6px;margin-bottom:10px;}
+.daybtn{flex:1;padding:5px 4px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:transparent;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;}
+.daybtn:hover{background:var(--surface2);color:var(--text);}
+.daybtn.active{background:rgba(79,142,247,.15);color:#93c5fd;border-color:rgba(79,142,247,.35);font-weight:500;}
+
+.team-rows{display:flex;flex-direction:column;gap:5px;}
+.member-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface2);transition:opacity .2s;}
+.member-row.absent{opacity:.28;}
+.avatar-sm{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;}
+.av-b{background:rgba(79,142,247,.2);color:#93c5fd;}
+.av-t{background:rgba(52,211,153,.2);color:#6ee7b7;}
+.av-p{background:rgba(167,139,250,.2);color:#c4b5fd;}
+.av-c{background:rgba(251,146,60,.2);color:#fdba74;}
+.av-a{background:rgba(245,158,11,.2);color:#fcd34d;}
+.m-name-sm{font-size:12px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.m-role-sm{font-size:10px;color:var(--muted);min-width:80px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.m-badges{display:flex;align-items:center;gap:5px;margin-left:auto;}
+.loc-badge{font-size:9px;padding:2px 6px;border-radius:8px;font-weight:500;white-space:nowrap;}
+.loc-kantoor{background:rgba(79,142,247,.18);color:#93c5fd;}
+.loc-thuis{background:rgba(167,139,250,.18);color:#c4b5fd;}
+.m-type-sm{font-size:9px;padding:2px 5px;border-radius:8px;}
+.type-v{background:rgba(52,211,153,.15);color:#6ee7b7;}
+.type-f{background:rgba(245,158,11,.1);color:#fcd34d;}
+.avail-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.avail-yes{background:var(--green);}
+.avail-no{background:var(--danger);}
+.avail-beperkt{background:var(--warn);}
+
+.task-list{display:flex;flex-direction:column;gap:8px;}
+.task-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface2);cursor:pointer;}
+.task-item.done{opacity:.4;}
+.task-check{width:18px;height:18px;border-radius:4px;border:1.5px solid #374151;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;}
+.task-item.done .task-check{background:var(--green);border-color:var(--green);}
+.task-item.done .task-check::after{content:'';display:block;width:4px;height:7px;border:1.5px solid #0f1117;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px);}
+.prio-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px;}
+.pn0{background:rgba(248,113,113,.2);color:#fca5a5;}
+.pn1{background:rgba(245,158,11,.2);color:#fcd34d;}
+.pn2{background:rgba(79,142,247,.2);color:#93c5fd;}
+.pn3{background:rgba(52,211,153,.2);color:#6ee7b7;}
+.pn4{background:rgba(167,139,250,.2);color:#c4b5fd;}
+.task-body{flex:1;min-width:0;}
+.task-text{font-size:13px;}
+.task-item.done .task-text{text-decoration:line-through;color:var(--muted);}
+.task-who{font-size:11px;color:var(--muted);margin-top:2px;}
+
+.dl-list{display:flex;flex-direction:column;gap:8px;}
+.dl-item{display:flex;align-items:center;gap:10px;transition:opacity .2s;}
+.dl-item.dl-done{opacity:.35;}
+.dl-check{width:16px;height:16px;border-radius:4px;border:1.5px solid #374151;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.dl-item.dl-done .dl-check{background:var(--green);border-color:var(--green);}
+.dl-item.dl-done .dl-check::after{content:'';display:block;width:3px;height:6px;border:1.5px solid #0f1117;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px);}
+.dl-date{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);min-width:44px;}
+.dl-bar{height:4px;border-radius:2px;flex:0 0 auto;}
+.dl-label{font-size:13px;}
+.dl-item.dl-done .dl-label{text-decoration:line-through;color:var(--muted);}
+.dl-tag{font-size:10px;padding:1px 7px;border-radius:10px;margin-left:6px;}
+.tg-r{background:rgba(248,113,113,.15);color:#fca5a5;}
+.tg-a{background:rgba(245,158,11,.15);color:#fcd34d;}
+.tg-b{background:rgba(79,142,247,.15);color:#93c5fd;}
+
+.opm-list{display:flex;flex-direction:column;gap:7px;}
+.opm-item{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface2);}
+.opm-dot{width:6px;height:6px;border-radius:50%;background:var(--warn);flex-shrink:0;margin-top:5px;}
+.opm-text{font-size:13px;line-height:1.5;}
+.opm-empty{font-size:13px;color:var(--muted);font-style:italic;}
+
+.verg-row{display:flex;gap:8px;flex-wrap:wrap;}
+.verg-pill{padding:10px 16px;border-radius:var(--radius-sm);border:0.5px solid;}
+.verg-time{font-family:'DM Mono',monospace;font-size:11px;margin-bottom:2px;}
+.verg-name{font-size:13px;font-weight:500;}
+.verg-sub{font-size:11px;margin-top:1px;}
+.vp-b{background:rgba(79,142,247,.1);border-color:rgba(79,142,247,.25);color:#93c5fd;}
+.vp-p{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.25);color:#c4b5fd;}
+.vp-c{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.25);color:#fdba74;}
+.vp-t{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.25);color:#6ee7b7;}
+.no-verg{font-size:13px;color:var(--muted);}
+
+footer{font-size:10px;color:var(--muted);text-align:center;font-family:'DM Mono',monospace;padding:4px 0;}
+.reset-btn{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);padding:4px 10px;border-radius:6px;border:0.5px solid var(--border);background:transparent;cursor:pointer;}
+.reset-btn:hover{color:var(--danger);}
+
+/* loading overlay */
+.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:100;}
+.loading-overlay.hidden{display:none;}
+.loading-spinner{width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;}
+
+/* ── ADMIN ── */
+.admin-wrap{max-width:900px;margin:0 auto;padding:24px 20px 80px;}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.admin-title{font-size:20px;font-weight:500;}
+.back-btn{font-size:12px;font-family:'DM Mono',monospace;color:var(--muted);padding:7px 14px;border-radius:8px;border:0.5px solid var(--border2);background:transparent;cursor:pointer;}
+.back-btn:hover{color:var(--text);}
+.admin-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+.tab-btn{padding:7px 16px;border-radius:8px;border:0.5px solid var(--border2);background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;transition:all .15s;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{background:rgba(79,142,247,.15);color:#93c5fd;border-color:rgba(79,142,247,.35);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.admin-section{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:20px 22px;margin-bottom:16px;}
+.admin-section h2{font-size:13px;font-weight:500;margin-bottom:16px;padding-bottom:10px;border-bottom:0.5px solid var(--border);}
+.ai{background:var(--surface2);border:0.5px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:6px 10px;outline:none;}
+.ai:focus{border-color:rgba(79,142,247,.5);}
+.ai.sm{font-size:12px;color:var(--muted);}
+.add-btn{width:100%;margin-top:10px;padding:8px;border-radius:8px;border:0.5px dashed var(--border2);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;}
+.add-btn:hover{background:var(--surface2);color:var(--text);}
+.del-btn{width:28px;height:28px;border-radius:6px;border:0.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.del-btn:hover{background:rgba(248,113,113,.15);color:#fca5a5;}
+.admin-task{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border);}
+.admin-task:last-child{border-bottom:none;}
+.asel{background:var(--surface2);border:0.5px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 8px;outline:none;cursor:pointer;width:100%;}
+.dag-status-grid{display:flex;flex-direction:column;gap:6px;}
+.dag-status-row{display:flex;align-items:center;gap:8px;}
+.dag-status-label{font-size:11px;color:var(--muted);min-width:28px;font-family:'DM Mono',monospace;}
+.dl-admin-item{display:grid;grid-template-columns:90px 1fr 120px 60px auto;gap:8px;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border);}
+.dl-admin-item:last-child{border-bottom:none;}
+.dl-month-header{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px;padding-top:8px;border-top:0.5px solid var(--border);}
+.dl-month-header:first-child{margin-top:0;border-top:none;padding-top:0;}
+.admin-verg-day{margin-bottom:14px;}
+.admin-verg-day h3{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;}
+.admin-verg-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--border);}
+.admin-verg-item:last-child{border-bottom:none;}
+.vi-time{width:70px;}.vi-name{flex:1;}.vi-sub{flex:1.5;}
+.save-bar{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:14px 20px;margin-top:8px;position:sticky;bottom:16px;}
+.save-msg{font-size:12px;color:var(--green);font-family:'DM Mono',monospace;}
+.save-btn{padding:9px 22px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
+.save-btn:hover{opacity:.85;}
+.save-btn:disabled{opacity:.5;cursor:not-allowed;}
+.av-swatch{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:500;}
+.av-swatch.sel{border-color:white;}
+textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
+.opm-admin-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border);}
+.opm-admin-item:last-child{border-bottom:none;}
+
+/* setup screen */
+.setup-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:28px;max-width:520px;margin:60px auto;}
+.setup-card h1{font-size:18px;font-weight:500;margin-bottom:8px;}
+.setup-card p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;}
+.setup-card input{width:100%;background:var(--surface2);border:0.5px solid var(--border2);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:10px 14px;outline:none;margin-bottom:10px;}
+.setup-card input:focus{border-color:rgba(79,142,247,.5);}
+.setup-btn{width:100%;padding:11px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
+.setup-note{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6;}
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div class="loading-overlay" id="loading">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loading-text">Dashboard laden...</div>
+</div>
+
+<!-- Setup screen (eerste keer) -->
+<div id="view-setup" style="display:none;">
+  <div class="setup-card">
+    <h1>Dashboard instellen</h1>
+    <p>Geef een unieke naam voor jullie dashboard. Iedereen die dezelfde naam gebruikt ziet dezelfde data.</p>
+    <input type="text" id="setup-key" placeholder="bijv. onlineboekhouders-bv" maxlength="40">
+    <button class="setup-btn" onclick="setupDashboard()">Dashboard starten</button>
+    <div class="setup-note">
+      Kies een naam die je gemakkelijk kan onthouden en delen met het team.<br>
+      Eens ingesteld wordt dit opgeslagen in de browser.
+    </div>
+  </div>
+</div>
+
+<!-- TV VIEW -->
+<div id="view-tv">
+<div class="tv-wrap">
+<header>
+  <div class="logo">
+    <div class="logo-mark">OB</div>
+    <div>
+      <span class="company-name">Online Boekhouders BV</span>
+      <span class="month-badge badge-red" id="mbadge"></span>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="sync-bar">
+      <div class="sync-dot" id="sync-dot"></div>
+      <span id="sync-label" style="color:var(--muted);">sync</span>
+    </div>
+    <div>
+      <div class="clock" id="clk">--:--</div>
+      <div class="date-str" id="dat"></div>
+    </div>
+    <button class="admin-toggle" onclick="openAdmin()">⚙ beheer</button>
+  </div>
+</header>
+<main>
+  <div class="card">
+    <div class="card-label">Team vandaag <span id="aanwezig-count" style="color:var(--green);font-family:'DM Mono',monospace;font-size:10px;"></span></div>
+    <div class="daynav" id="daynav"></div>
+    <div class="team-rows" id="teamgrid"></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Mededelingen</div>
+    <div class="opm-list" id="opm-list"></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Deadlines <span id="dl-maand-tv"></span></div>
+    <div class="dl-list" id="dl-list"></div>
+  </div>
+  <div class="card s2">
+    <div class="card-label">Teamtaken deze week <button class="reset-btn" onclick="resetTaken()">↺ reset week</button></div>
+    <div class="task-list" id="takenlijst"></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Vergaderingen vandaag</div>
+    <div class="verg-row" id="vergrow"></div>
+  </div>
+</main>
+<footer id="footer-ts"></footer>
+</div>
+</div>
+
+<!-- ADMIN VIEW -->
+<div id="view-admin">
+<div class="admin-wrap">
+  <div class="admin-header">
+    <div class="admin-title">⚙ Beheerpaneel</div>
+    <button class="back-btn" onclick="closeAdmin()">← Terug naar dashboard</button>
+  </div>
+  <div class="admin-tabs">
+    <button class="tab-btn active" onclick="switchTab('taken')">Teamtaken</button>
+    <button class="tab-btn" onclick="switchTab('opmerkingen')">Mededelingen</button>
+    <button class="tab-btn" onclick="switchTab('team')">Teamleden</button>
+    <button class="tab-btn" onclick="switchTab('deadlines')">Deadlines</button>
+    <button class="tab-btn" onclick="switchTab('vergad')">Vergaderingen</button>
+  </div>
+  <div class="tab-panel active" id="tab-taken">
+    <div class="admin-section"><h2>Teamtaken deze week</h2><div id="admin-taken"></div><button class="add-btn" onclick="addTaak()">+ Taak toevoegen</button></div>
+  </div>
+  <div class="tab-panel" id="tab-opmerkingen">
+    <div class="admin-section"><h2>Mededelingen</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Ad hoc berichten zichtbaar op het dashboard.</p><div id="admin-opm"></div><button class="add-btn" onclick="addOpm()">+ Mededeling toevoegen</button></div>
+  </div>
+  <div class="tab-panel" id="tab-team">
+    <div class="admin-section"><h2>Teamleden &amp; status per dag</h2><div id="admin-team"></div><button class="add-btn" onclick="addLid()">+ Teamlid toevoegen</button></div>
+  </div>
+  <div class="tab-panel" id="tab-deadlines">
+    <div class="admin-section"><h2>Deadlines per maand</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Automatisch gesorteerd op datum bij opslaan.</p><div id="admin-dl"></div></div>
+  </div>
+  <div class="tab-panel" id="tab-vergad">
+    <div class="admin-section"><h2>Vaste vergaderingen per dag</h2><div id="admin-verg"></div></div>
+  </div>
+  <div class="save-bar">
+    <span class="save-msg" id="save-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveAll()">Opslaan &amp; synchroniseren</button>
+  </div>
+</div>
+</div>
+
+<script>
+/* ══ CONSTANTEN ══ */
+const MAANDEN=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+const DAGEN_LANG=['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'];
+const DAGEN_SHORT=['Ma','Di','Wo','Do','Vr'];
+const MAAND_INFO=[
+  {t:'Zeer drukke maand',c:'badge-red'},{t:'Kalme maand',c:'badge-green'},
+  {t:'Middelmatige maand',c:'badge-amber'},{t:'Zeer drukke maand',c:'badge-red'},
+  {t:'Middelmatige maand',c:'badge-amber'},{t:'Middelmatige maand',c:'badge-amber'},
+  {t:'Zeer drukke maand',c:'badge-red'},{t:'Middelmatige maand',c:'badge-amber'},
+  {t:'Drukke maand',c:'badge-amber'},{t:'Zeer drukke maand',c:'badge-red'},
+  {t:'Kalme maand',c:'badge-green'},{t:'Kalme maand',c:'badge-green'},
+];
+const AV_OPTS=[
+  {cls:'av-b',bg:'rgba(79,142,247,.3)',fg:'#93c5fd'},
+  {cls:'av-t',bg:'rgba(52,211,153,.3)',fg:'#6ee7b7'},
+  {cls:'av-p',bg:'rgba(167,139,250,.3)',fg:'#c4b5fd'},
+  {cls:'av-c',bg:'rgba(251,146,60,.3)',fg:'#fdba74'},
+  {cls:'av-a',bg:'rgba(245,158,11,.3)',fg:'#fcd34d'},
+];
+const PNCS=['pn0','pn1','pn2','pn3','pn4'];
+const VERG_COLORS=[{v:'vp-b',l:'Blauw'},{v:'vp-t',l:'Groen'},{v:'vp-p',l:'Paars'},{v:'vp-c',l:'Oranje'}];
+const URG_OPTS=['urgent','binnenkort','deze maand'];
+const URG_COLORS={'urgent':'#f87171','binnenkort':'#f59e0b','deze maand':'#4f8ef7'};
+const URG_TAG={'urgent':'tg-r','binnenkort':'tg-a','deze maand':'tg-b'};
+
+/* ══ DEFAULTS ══ */
+const DEFAULT_DATA={
+  team:[
+    {i:'TD',n:'Tom Dewaele',r:'Zaakvoerder',av:'av-b',type:'v',da:[{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
+    {i:'MD',n:'Milan De Clercq',r:'Administratie',av:'av-t',type:'v',da:[{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
+    {i:'TW',n:'Tessa Willaert',r:'Accountant',av:'av-p',type:'v',da:[{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
+    {i:'DS',n:'Daphné Sweetlove',r:'Accountant',av:'av-c',type:'v',da:[{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
+    {i:'LD',n:'Lisa Dierckx',r:'ITAA freelance',av:'av-a',type:'f',da:[{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'thuis',av:'ja'}]},
+    {i:'SR',n:'Stephanie Rogge',r:'Stagiair freelance',av:'av-t',type:'f',da:[{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'thuis',av:'ja'}]},
+    {i:'LG',n:'Lindsay Gryson',r:'Stagiair freelance',av:'av-p',type:'f',da:[{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'thuis',av:'ja'}]},
+    {i:'CD',n:'Chris Deceuninck',r:'ITAA freelance',av:'av-b',type:'f',da:[{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'thuis',av:'beperkt'},{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'}]},
+    {i:'SA',n:'Souliman Ahankour',r:'Medewerker freelance',av:'av-a',type:'f',da:[{aan:1,loc:'kantoor',av:'ja'},{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'kantoor',av:'ja'}]},
+  ],
+  taken:[
+    {t:'BTW april afronden',w:'Tessa + Daphné',done:false},
+    {t:'Dossiers 30/09 afwerken',w:'Lisa + Lindsay',done:false},
+    {t:'Nieuwe stagiair onboarden',w:'Tom + Milan',done:false},
+    {t:'Nieuwe tarieven doorvoeren',w:'Tom',done:false},
+    {t:'Mailbox opvolging klanten',w:'Milan',done:false},
+  ],
+  opmerkingen:[],
+  deadlines:[
+    [{d:'15/01',l:'Aangifte BV',urg:'urgent',bc:'#f87171',bw:20,done:false},{d:'20/01',l:'BTW kwartaal + maand',urg:'urgent',bc:'#f87171',bw:32,done:false},{d:'31/01',l:'Dossiers 30/06 indienen',urg:'deze maand',bc:'#4f8ef7',bw:72,done:false}],
+    [{d:'20/02',l:'BTW maand',urg:'binnenkort',bc:'#f59e0b',bw:55,done:false},{d:'29/02',l:'Fiches 281.20',urg:'deze maand',bc:'#4f8ef7',bw:80,done:false}],
+    [{d:'20/03',l:'BTW maand',urg:'binnenkort',bc:'#f59e0b',bw:55,done:false},{d:'31/03',l:'BTW klantenlisting',urg:'deze maand',bc:'#4f8ef7',bw:85,done:false}],
+    [{d:'10/04',l:'Voorafbetalingen',urg:'urgent',bc:'#f87171',bw:22,done:false},{d:'15/04',l:'BV aangifte',urg:'urgent',bc:'#f87171',bw:30,done:false},{d:'20/04',l:'BTW maand + kwartaal',urg:'binnenkort',bc:'#f59e0b',bw:48,done:false},{d:'30/04',l:'Vennootschappen 30/09',urg:'deze maand',bc:'#4f8ef7',bw:72,done:false}],
+    [{d:'20/05',l:'BTW maand',urg:'deze maand',bc:'#4f8ef7',bw:60,done:false}],
+    [{d:'20/06',l:'BTW maand',urg:'binnenkort',bc:'#f59e0b',bw:55,done:false},{d:'30/06',l:'PB papieren aangifte',urg:'deze maand',bc:'#4f8ef7',bw:80,done:false}],
+    [{d:'10/07',l:'Voorafbetalingen',urg:'urgent',bc:'#f87171',bw:22,done:false},{d:'15/07',l:'BV + PB loontrekkers',urg:'urgent',bc:'#f87171',bw:32,done:false},{d:'20/07',l:'BTW maand + kwartaal',urg:'binnenkort',bc:'#f59e0b',bw:50,done:false},{d:'31/07',l:'Jaarrekeningen vennootschappen',urg:'deze maand',bc:'#4f8ef7',bw:75,done:false}],
+    [{d:'20/08',l:'BTW maand',urg:'deze maand',bc:'#4f8ef7',bw:60,done:false}],
+    [{d:'20/09',l:'BTW maand',urg:'binnenkort',bc:'#f59e0b',bw:55,done:false},{d:'30/09',l:'BIZTAX 31/12 indienen',urg:'deze maand',bc:'#4f8ef7',bw:80,done:false}],
+    [{d:'10/10',l:'Voorafbetalingen',urg:'urgent',bc:'#f87171',bw:20,done:false},{d:'15/10',l:'BV + PB aangiftes',urg:'urgent',bc:'#f87171',bw:32,done:false},{d:'20/10',l:'BTW maand + kwartaal',urg:'binnenkort',bc:'#f59e0b',bw:50,done:false},{d:'31/10',l:'Vennootschappen 31/03',urg:'deze maand',bc:'#4f8ef7',bw:75,done:false}],
+    [{d:'20/11',l:'BTW maand',urg:'deze maand',bc:'#4f8ef7',bw:60,done:false}],
+    [{d:'20/12',l:'BTW maand',urg:'binnenkort',bc:'#f59e0b',bw:50,done:false},{d:'20/12',l:'Voorafbetalingen',urg:'binnenkort',bc:'#f59e0b',bw:60,done:false}],
+  ],
+  vergad:[
+    [{t:'13:00',n:'Teamvergadering',s:'Alle medewerkers + freelancers',c:'vp-t'},{t:'flex',n:'Milan begeleiding',s:'30 min — dagelijkse opvolging',c:'vp-b'}],
+    [{t:'09:00',n:'Kantoorteam',s:'Vast team — 30 min',c:'vp-b'},{t:'flex',n:'1-op-1 Daphné',s:'45 min opvolging',c:'vp-p'},{t:'flex',n:'Milan begeleiding',s:'30 min',c:'vp-b'}],
+    [{t:'flex',n:'1-op-1 Tessa',s:'45 min opvolging',c:'vp-p'},{t:'flex',n:'Milan begeleiding',s:'30 min',c:'vp-b'}],
+    [{t:'12:30',n:'Vertrek HOWEST',s:'Tom afwezig vanaf 12:30',c:'vp-c'},{t:'13:30',n:'Les HOWEST',s:'Tom — tot 18:00',c:'vp-c'}],
+    [{t:'09:00',n:'Kantoorteam',s:'Vast team — 30 min',c:'vp-b'},{t:'15:30',n:'Week-afstemming',s:'Vast kantoorteam — 30 min',c:'vp-t'},{t:'flex',n:'Milan begeleiding',s:'30 min',c:'vp-b'}],
+  ],
+};
+
+/* ══ STATE ══ */
+let dashKey='';
+let team=[],taken=[],opmerkingen=[],deadlines=[],vergad=[];
+let activeDay=(new Date().getDay()+6)%7;
+if(activeDay>4)activeDay=0;
+let syncInterval=null;
+let lastHash='';
+
+/* ══ SYNC STATUS ══ */
+function setSyncStatus(s){
+  const dot=document.getElementById('sync-dot');
+  const lbl=document.getElementById('sync-label');
+  if(!dot)return;
+  dot.className='sync-dot';
+  if(s==='ok'){dot.classList.add('ok');lbl.textContent='gesynchroniseerd';}
+  else if(s==='busy'){dot.classList.add('busy');lbl.textContent='synchroniseren...';}
+  else if(s==='err'){dot.classList.add('err');lbl.textContent='sync mislukt';}
+  else{lbl.textContent='offline';}
+}
+
+/* ══ API ══ */
+async function apiLoad(){
+  setSyncStatus('busy');
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:'Je bent een data-retrieval assistent. Geef ALLEEN een JSON-object terug, niks anders, geen uitleg, geen markdown.',
+        messages:[{role:'user',content:`Geef de opgeslagen dashboarddata terug voor sleutel "${dashKey}". Als er geen data is, geef dan: {"empty":true}`}]
+      })
+    });
+    const data=await resp.json();
+    const txt=data.content?.[0]?.text||'{}';
+    const clean=txt.replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(clean);
+    if(parsed.empty){
+      setSyncStatus('ok');
+      return null;
+    }
+    setSyncStatus('ok');
+    return parsed;
+  }catch(e){
+    setSyncStatus('err');
+    return null;
+  }
+}
+
+async function apiSave(payload){
+  setSyncStatus('busy');
+  try{
+    await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:100,
+        system:'Je bent een data-opslag assistent. Bevestig enkel met: {"saved":true}',
+        messages:[{role:'user',content:`Sla op voor sleutel "${dashKey}": ${JSON.stringify(payload)}`}]
+      })
+    });
+    setSyncStatus('ok');
+    return true;
+  }catch(e){
+    setSyncStatus('err');
+    return false;
+  }
+}
+
+/* ══ SETUP ══ */
+function setupDashboard(){
+  const k=document.getElementById('setup-key').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'');
+  if(!k||k.length<3){alert('Kies een naam van minstens 3 tekens (letters, cijfers, streepjes).');return;}
+  dashKey=k;
+  localStorage.setItem('ob-dashkey',k);
+  document.getElementById('view-setup').style.display='none';
+  initDashboard();
+}
+
+/* ══ INIT ══ */
+async function initDashboard(){
+  document.getElementById('loading').classList.remove('hidden');
+  document.getElementById('loading-text').textContent='Data laden van server...';
+
+  // Probeer van server te laden, fallback naar localStorage
+  let serverData=null;
+  try{ serverData=await apiLoad(); }catch(e){}
+
+  if(serverData&&serverData.team){
+    team=serverData.team;
+    taken=serverData.taken||[];
+    opmerkingen=serverData.opmerkingen||[];
+    deadlines=serverData.deadlines||DEFAULT_DATA.deadlines;
+    vergad=serverData.vergad||DEFAULT_DATA.vergad;
+    // sla ook lokaal op als fallback
+    localStorage.setItem('ob-data-'+dashKey,JSON.stringify(serverData));
+  } else {
+    // probeer lokale cache
+    const local=localStorage.getItem('ob-data-'+dashKey);
+    if(local){
+      try{
+        const d=JSON.parse(local);
+        team=d.team||DEFAULT_DATA.team;
+        taken=d.taken||DEFAULT_DATA.taken;
+        opmerkingen=d.opmerkingen||[];
+        deadlines=d.deadlines||DEFAULT_DATA.deadlines;
+        vergad=d.vergad||DEFAULT_DATA.vergad;
+      }catch(e){ loadDefaults(); }
+    } else {
+      loadDefaults();
+    }
+  }
+
+  document.getElementById('loading').classList.add('hidden');
+  document.getElementById('view-tv').style.display='block';
+
+  updateClock();renderNav();renderTeam();renderVergad();renderDeadlines();renderTaken();renderOpm();
+
+  // Auto-refresh elke 60 seconden
+  if(syncInterval)clearInterval(syncInterval);
+  syncInterval=setInterval(autoRefresh,60000);
+}
+
+function loadDefaults(){
+  team=JSON.parse(JSON.stringify(DEFAULT_DATA.team));
+  taken=JSON.parse(JSON.stringify(DEFAULT_DATA.taken));
+  opmerkingen=[];
+  deadlines=JSON.parse(JSON.stringify(DEFAULT_DATA.deadlines));
+  vergad=JSON.parse(JSON.stringify(DEFAULT_DATA.vergad));
+}
+
+async function autoRefresh(){
+  // Haal nieuwe data op zonder loading screen
+  try{
+    const serverData=await apiLoad();
+    if(serverData&&serverData.team){
+      const newHash=JSON.stringify(serverData);
+      if(newHash!==lastHash){
+        lastHash=newHash;
+        team=serverData.team;
+        taken=serverData.taken||[];
+        opmerkingen=serverData.opmerkingen||[];
+        deadlines=serverData.deadlines||DEFAULT_DATA.deadlines;
+        vergad=serverData.vergad||DEFAULT_DATA.vergad;
+        renderTeam();renderTaken();renderOpm();renderDeadlines();renderVergad();
+      }
+    }
+  }catch(e){}
+  updateClock();renderNav();
+}
+
+/* ══ CLOCK ══ */
+function updateClock(){
+  const n=new Date();
+  const h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('clk').textContent=h+':'+m;
+  document.getElementById('dat').textContent=DAGEN_LANG[n.getDay()]+' '+n.getDate()+' '+MAANDEN[n.getMonth()]+' '+n.getFullYear();
+  const mb=MAAND_INFO[n.getMonth()];
+  const el=document.getElementById('mbadge');
+  el.textContent=MAANDEN[n.getMonth()].charAt(0).toUpperCase()+MAANDEN[n.getMonth()].slice(1)+' — '+mb.t;
+  el.className='month-badge '+mb.c;
+  document.getElementById('dl-maand-tv').textContent=MAANDEN[n.getMonth()];
+  document.getElementById('footer-ts').textContent='Vernieuwd om '+h+':'+m+' — '+dashKey;
+}
+setInterval(updateClock,30000);
+
+/* ══ TV RENDERS ══ */
+function renderNav(){
+  document.getElementById('daynav').innerHTML=DAGEN_SHORT.map((d,i)=>
+    `<button class="daybtn${i===activeDay?' active':''}" onclick="setDay(${i})">${d}</button>`
+  ).join('');
+}
+function renderTeam(){
+  const aanCount=team.filter(m=>m.da[activeDay]&&m.da[activeDay].aan).length;
+  document.getElementById('aanwezig-count').textContent=aanCount+'/'+team.length;
+  document.getElementById('teamgrid').innerHTML=team.map(m=>{
+    const dag=m.da[activeDay]||{aan:0,loc:'kantoor',av:'ja'};
+    const aan=dag.aan;
+    const dotCls=!aan?'avail-no':(dag.av==='nee'?'avail-no':dag.av==='beperkt'?'avail-beperkt':'avail-yes');
+    return`<div class="member-row${aan?'':' absent'}">
+      <div class="avatar-sm ${m.av||'av-b'}">${m.i}</div>
+      <span class="m-name-sm">${m.n}</span>
+      <span class="m-role-sm">${m.r}</span>
+      <div class="m-badges">
+        ${aan?`<span class="loc-badge ${dag.loc==='thuis'?'loc-thuis':'loc-kantoor'}">${dag.loc}</span>`:''}
+        <span class="m-type-sm ${m.type==='v'?'type-v':'type-f'}">${m.type==='v'?'vast':'free'}</span>
+        <div class="avail-dot ${dotCls}"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderVergad(){
+  const vg=vergad[activeDay]||[];
+  const el=document.getElementById('vergrow');
+  if(!vg.length){el.innerHTML=`<span class="no-verg">Geen vaste vergaderingen vandaag</span>`;return;}
+  el.innerHTML=vg.map(v=>`<div class="verg-pill ${v.c}"><div class="verg-time">${v.t}</div><div class="verg-name">${v.n}</div><div class="verg-sub">${v.s}</div></div>`).join('');
+}
+function parseDatumSort(d){const p=(d||'').split('/');if(p.length<2)return 9999;return parseInt(p[1]||0)*100+parseInt(p[0]||0);}
+function sortDL(mi){if(deadlines[mi])deadlines[mi].sort((a,b)=>parseDatumSort(a.d)-parseDatumSort(b.d));}
+function renderDeadlines(){
+  const mi=new Date().getMonth();
+  const dl=(deadlines[mi]||[]).slice().sort((a,b)=>parseDatumSort(a.d)-parseDatumSort(b.d));
+  document.getElementById('dl-list').innerHTML=dl.length
+    ?dl.map((d,i)=>`<div class="dl-item${d.done?' dl-done':''}">
+        <div class="dl-check" onclick="toggleDL(${i})"></div>
+        <span class="dl-date">${d.d}</span>
+        <div class="dl-bar" style="background:${d.bc};width:${Math.min(d.bw,80)}px;"></div>
+        <span class="dl-label">${esc(d.l)}<span class="dl-tag ${URG_TAG[d.urg]||'tg-b'}">${d.urg}</span></span>
+      </div>`).join('')
+    :`<span style="font-size:13px;color:var(--muted);">Geen deadlines deze maand</span>`;
+}
+function toggleDL(si){
+  const mi=new Date().getMonth();
+  const sorted=(deadlines[mi]||[]).slice().sort((a,b)=>parseDatumSort(a.d)-parseDatumSort(b.d));
+  const item=sorted[si];const ri=deadlines[mi].indexOf(item);
+  if(ri>=0){deadlines[mi][ri].done=!deadlines[mi][ri].done;persistLocal();renderDeadlines();}
+}
+function renderTaken(){
+  document.getElementById('takenlijst').innerHTML=taken.map((tk,i)=>
+    `<div class="task-item${tk.done?' done':''}" onclick="toggleDone(${i})">
+      <div class="task-check"></div>
+      <div class="prio-num ${PNCS[i]||'pn4'}">${i+1}</div>
+      <div class="task-body"><div class="task-text">${esc(tk.t)}</div><div class="task-who">${esc(tk.w)}</div></div>
+    </div>`
+  ).join('');
+}
+function renderOpm(){
+  const el=document.getElementById('opm-list');
+  if(!opmerkingen.length){el.innerHTML=`<span class="opm-empty">Geen mededelingen</span>`;return;}
+  el.innerHTML=opmerkingen.map(o=>`<div class="opm-item"><div class="opm-dot"></div><span class="opm-text">${esc(o.t)}</span></div>`).join('');
+}
+function setDay(i){activeDay=i;renderNav();renderTeam();renderVergad();}
+function toggleDone(i){taken[i].done=!taken[i].done;persistLocal();renderTaken();}
+function resetTaken(){taken.forEach(t=>t.done=false);persistLocal();renderTaken();}
+function persistLocal(){localStorage.setItem('ob-data-'+dashKey,JSON.stringify({team,taken,opmerkingen,deadlines,vergad}));}
+
+/* ══ ADMIN ══ */
+let activeTab='taken';
+function openAdmin(){document.body.classList.add('admin');renderAdminAll();}
+function closeAdmin(){document.body.classList.remove('admin');renderTaken();renderTeam();renderNav();renderVergad();renderDeadlines();renderOpm();}
+function switchTab(tab){
+  activeTab=tab;
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['taken','opmerkingen','team','deadlines','vergad'][i]===tab));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+function renderAdminAll(){renderAdminTaken();renderAdminOpm();renderAdminTeam();renderAdminDL();renderAdminVerg();}
+
+function renderAdminTaken(){
+  document.getElementById('admin-taken').innerHTML=taken.map((tk,i)=>
+    `<div class="admin-task">
+      <div class="prio-num ${PNCS[i]||'pn4'}" style="flex-shrink:0;">${i+1}</div>
+      <input class="ai" style="flex:1;" value="${esc(tk.t)}" placeholder="Taakomschrijving" oninput="taken[${i}].t=this.value">
+      <input class="ai sm" style="width:150px;" value="${esc(tk.w)}" placeholder="Wie?" oninput="taken[${i}].w=this.value">
+      <button class="del-btn" onclick="delTaak(${i})">×</button>
+    </div>`
+  ).join('');
+}
+function addTaak(){taken.push({t:'Nieuwe taak',w:'',done:false});renderAdminTaken();}
+function delTaak(i){taken.splice(i,1);renderAdminTaken();}
+
+function renderAdminOpm(){
+  document.getElementById('admin-opm').innerHTML=opmerkingen.map((o,i)=>
+    `<div class="opm-admin-item">
+      <div class="opm-dot" style="margin-top:10px;flex-shrink:0;"></div>
+      <textarea class="ai" style="flex:1;" oninput="opmerkingen[${i}].t=this.value">${esc(o.t)}</textarea>
+      <button class="del-btn" onclick="delOpm(${i})">×</button>
+    </div>`
+  ).join('');
+}
+function addOpm(){opmerkingen.push({t:''});renderAdminOpm();}
+function delOpm(i){opmerkingen.splice(i,1);renderAdminOpm();}
+
+function renderAdminTeam(){
+  document.getElementById('admin-team').innerHTML=team.map((m,mi)=>{
+    const avSwatches=AV_OPTS.map(a=>`<div class="av-swatch ${a.cls}${m.av===a.cls?' sel':''}" style="background:${a.bg};color:${a.fg};" onclick="team[${mi}].av='${a.cls}';renderAdminTeam();">${m.i}</div>`).join('');
+    const dagRows=DAGEN_SHORT.map((dag,di)=>{
+      const d=m.da[di]||{aan:0,loc:'kantoor',av:'ja'};
+      return`<div class="dag-status-row">
+        <span class="dag-status-label">${dag}</span>
+        <input type="checkbox" style="accent-color:var(--accent);width:14px;height:14px;cursor:pointer;" ${d.aan?'checked':''} onchange="team[${mi}].da[${di}].aan=this.checked?1:0;renderAdminTeam();">
+        <select class="asel" style="width:95px;" ${!d.aan?'disabled':''} onchange="team[${mi}].da[${di}].loc=this.value">
+          <option value="kantoor"${d.loc==='kantoor'?' selected':''}>Kantoor</option>
+          <option value="thuis"${d.loc==='thuis'?' selected':''}>Thuis</option>
+        </select>
+        <select class="asel" style="width:145px;" ${!d.aan?'disabled':''} onchange="team[${mi}].da[${di}].av=this.value">
+          <option value="ja"${d.av==='ja'?' selected':''}>Beschikbaar</option>
+          <option value="beperkt"${d.av==='beperkt'?' selected':''}>Beperkt beschikbaar</option>
+          <option value="nee"${d.av==='nee'?' selected':''}>Niet beschikbaar</option>
+        </select>
+      </div>`;
+    }).join('');
+    return`<div style="background:var(--surface2);border-radius:var(--radius-sm);padding:14px;margin-bottom:10px;border:0.5px solid var(--border);">
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
+        <div style="display:flex;gap:4px;flex-shrink:0;">${avSwatches}</div>
+        <div style="display:flex;gap:8px;flex:1;flex-wrap:wrap;">
+          <input class="ai" style="width:55px;text-align:center;" value="${esc(m.i)}" maxlength="3" oninput="team[${mi}].i=this.value">
+          <input class="ai" style="flex:1;min-width:120px;" value="${esc(m.n)}" placeholder="Naam" oninput="team[${mi}].n=this.value">
+          <input class="ai sm" style="flex:1;min-width:100px;" value="${esc(m.r)}" placeholder="Rol" oninput="team[${mi}].r=this.value">
+          <select class="asel" style="width:100px;" onchange="team[${mi}].type=this.value">
+            <option value="v"${m.type==='v'?' selected':''}>Vast</option>
+            <option value="f"${m.type==='f'?' selected':''}>Freelance</option>
+          </select>
+          <button class="del-btn" onclick="delLid(${mi})">×</button>
+        </div>
+      </div>
+      <div class="dag-status-grid">${dagRows}</div>
+    </div>`;
+  }).join('');
+}
+function addLid(){team.push({i:'??',n:'Naam',r:'Rol',av:'av-b',type:'v',da:Array(5).fill(null).map(()=>({aan:1,loc:'kantoor',av:'ja'}))});renderAdminTeam();}
+function delLid(i){team.splice(i,1);renderAdminTeam();}
+
+function renderAdminDL(){
+  let html='';
+  MAANDEN.forEach((mn,mi)=>{
+    html+=`<div class="dl-month-header">${mn.charAt(0).toUpperCase()+mn.slice(1)}</div>`;
+    (deadlines[mi]||[]).forEach((dl,di)=>{
+      html+=`<div class="dl-admin-item">
+        <input class="ai" style="width:90px;" value="${esc(dl.d)}" placeholder="20/04" oninput="deadlines[${mi}][${di}].d=this.value">
+        <input class="ai" style="flex:1;" value="${esc(dl.l)}" placeholder="Omschrijving" oninput="deadlines[${mi}][${di}].l=this.value">
+        <select class="asel" style="width:120px;" onchange="deadlines[${mi}][${di}].urg=this.value;deadlines[${mi}][${di}].bc=URG_COLORS[this.value];">
+          ${URG_OPTS.map(u=>`<option value="${u}"${dl.urg===u?' selected':''}>${u}</option>`).join('')}
+        </select>
+        <div style="display:flex;align-items:center;gap:5px;">
+          <input type="checkbox" style="accent-color:var(--green);width:14px;height:14px;cursor:pointer;" ${dl.done?'checked':''} onchange="deadlines[${mi}][${di}].done=this.checked;" title="Afgewerkt">
+          <span style="font-size:10px;color:var(--muted);">klaar</span>
+        </div>
+        <button class="del-btn" onclick="delDL(${mi},${di})">×</button>
+      </div>`;
+    });
+    html+=`<button class="add-btn" style="margin-bottom:4px;" onclick="addDL(${mi})">+ Deadline toevoegen in ${mn}</button>`;
+  });
+  document.getElementById('admin-dl').innerHTML=html;
+}
+function addDL(mi){if(!deadlines[mi])deadlines[mi]=[];deadlines[mi].push({d:'',l:'Nieuwe deadline',urg:'binnenkort',bc:'#f59e0b',bw:50,done:false});renderAdminDL();}
+function delDL(mi,di){deadlines[mi].splice(di,1);renderAdminDL();}
+
+function renderAdminVerg(){
+  document.getElementById('admin-verg').innerHTML=DAGEN_SHORT.map((dag,di)=>{
+    const vg=vergad[di]||[];
+    return`<div class="admin-verg-day"><h3>${dag}</h3>
+      ${vg.map((v,vi)=>`<div class="admin-verg-item">
+        <input class="ai vi-time" value="${esc(v.t)}" placeholder="09:00" oninput="vergad[${di}][${vi}].t=this.value">
+        <input class="ai vi-name" value="${esc(v.n)}" placeholder="Naam" oninput="vergad[${di}][${vi}].n=this.value">
+        <input class="ai vi-sub" value="${esc(v.s)}" placeholder="Ondertitel" oninput="vergad[${di}][${vi}].s=this.value">
+        <select class="asel" style="width:90px;" onchange="vergad[${di}][${vi}].c=this.value">
+          ${VERG_COLORS.map(c=>`<option value="${c.v}"${v.c===c.v?' selected':''}>${c.l}</option>`).join('')}
+        </select>
+        <button class="del-btn" onclick="delVerg(${di},${vi})">×</button>
+      </div>`).join('')}
+      <button class="add-btn" style="margin-top:4px;" onclick="addVerg(${di})">+ Vergadering op ${dag}</button>
+    </div>`;
+  }).join('');
+}
+function addVerg(di){if(!vergad[di])vergad[di]=[];vergad[di].push({t:'09:00',n:'Vergadering',s:'Omschrijving',c:'vp-b'});renderAdminVerg();}
+function delVerg(di,vi){vergad[di].splice(vi,1);renderAdminVerg();}
+
+async function saveAll(){
+  for(let mi=0;mi<12;mi++)sortDL(mi);
+  const payload={team,taken,opmerkingen,deadlines,vergad};
+  const btn=document.getElementById('save-btn');
+  btn.disabled=true;btn.textContent='Opslaan...';
+  const ok=await apiSave(payload);
+  persistLocal();
+  renderAdminDL();
+  btn.disabled=false;btn.textContent='Opslaan & synchroniseren';
+  const msg=document.getElementById('save-msg');
+  msg.textContent=ok?'✓ Gesynchroniseerd om '+new Date().toLocaleTimeString('nl',{hour:'2-digit',minute:'2-digit'}):'⚠ Lokaal opgeslagen (server niet bereikbaar)';
+  setTimeout(()=>msg.textContent='',4000);
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+
+/* ══ BOOTSTRAP ══ */
+(function(){
+  const saved=localStorage.getItem('ob-dashkey');
+  if(saved){
+    dashKey=saved;
+    document.getElementById('view-setup').style.display='none';
+    initDashboard();
+  } else {
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('view-tv').style.display='none';
+    document.getElementById('view-setup').style.display='block';
+  }
+})();
+</script>
+</body>
+</html>
