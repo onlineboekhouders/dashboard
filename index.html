@@ -16,45 +16,26 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-
-/* ── VIEWS ── */
 #view-tv{display:none;}
 #view-admin{display:none;}
-#view-setup{display:none;}
 #view-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;}
 #view-login{display:none;align-items:center;justify-content:center;min-height:100vh;}
-
 .spinner{width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .load-txt{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;}
 
-/* ── SETUP ── */
-.setup-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:32px;max-width:480px;width:90%;margin:0 auto;}
-.setup-card h1{font-size:18px;font-weight:500;margin-bottom:6px;}
-.setup-card p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;}
-.setup-steps{display:flex;flex-direction:column;gap:16px;}
-.step{background:var(--surface2);border-radius:var(--radius-sm);padding:16px;border:0.5px solid var(--border);}
-.step-num{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);margin-bottom:6px;}
-.step-title{font-size:13px;font-weight:500;margin-bottom:8px;}
-.step p{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6;}
-.step a{color:var(--accent);font-size:12px;}
-.fi{width:100%;background:var(--bg);border:0.5px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:9px 12px;outline:none;margin-bottom:8px;}
-.fi:focus{border-color:rgba(79,142,247,.5);}
-.fi.pw{font-family:'DM Sans',sans-serif;}
-.setup-btn{width:100%;padding:11px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;margin-top:4px;}
-.setup-btn:hover{opacity:.85;}
-.setup-note{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6;text-align:center;}
-.err-msg{font-size:12px;color:var(--danger);margin-top:6px;display:none;}
-
-/* ── LOGIN MODAL ── */
+/* LOGIN */
 .login-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:28px;max-width:360px;width:90%;}
 .login-card h2{font-size:16px;font-weight:500;margin-bottom:6px;}
 .login-card p{font-size:13px;color:var(--muted);margin-bottom:16px;}
-.login-row{display:flex;gap:8px;}
+.login-row{display:flex;gap:8px;margin-top:12px;}
 .cancel-btn{padding:9px 16px;border-radius:8px;border:0.5px solid var(--border2);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
 .ok-btn{flex:1;padding:9px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
+.fi{width:100%;background:var(--bg);border:0.5px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 12px;outline:none;}
+.fi:focus{border-color:rgba(79,142,247,.5);}
+.err-msg{font-size:12px;color:var(--danger);margin-top:6px;display:none;}
 
-/* ── TV ── */
+/* TV */
 .tv-wrap{padding:16px;display:grid;grid-template-rows:auto 1fr auto;gap:14px;min-height:100vh;}
 header{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:14px 22px;}
 .logo{display:flex;align-items:center;gap:12px;}
@@ -73,19 +54,24 @@ header{display:flex;align-items:center;justify-content:space-between;background:
 .sync-dot.busy{background:var(--warn);animation:pulse 1s infinite;}
 .sync-dot.err{background:var(--danger);}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-.admin-toggle{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);padding:6px 12px;border-radius:6px;border:0.5px solid var(--border2);background:transparent;cursor:pointer;transition:all .15s;}
-.admin-toggle:hover{color:var(--text);border-color:rgba(255,255,255,.25);}
+.admin-toggle{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);padding:6px 12px;border-radius:6px;border:0.5px solid var(--border2);background:transparent;cursor:pointer;}
+.admin-toggle:hover{color:var(--text);}
 
 main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
 .card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:16px 18px;}
 .s2{grid-column:span 2;}.s3{grid-column:span 3;}
 .card-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
 
-.daynav{display:flex;gap:6px;margin-bottom:10px;}
-.daybtn{flex:1;padding:5px 4px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:transparent;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;}
-.daybtn:hover{background:var(--surface2);color:var(--text);}
-.daybtn.active{background:rgba(79,142,247,.15);color:#93c5fd;border-color:rgba(79,142,247,.35);font-weight:500;}
+/* WEEKNAV - 2 weken */
+.weeknav{display:flex;gap:4px;margin-bottom:8px;}
+.weekbtn{flex:1;padding:4px 2px;border-radius:6px;border:0.5px solid var(--border);background:transparent;font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;line-height:1.4;}
+.weekbtn:hover{background:var(--surface2);color:var(--text);}
+.weekbtn.active{background:rgba(79,142,247,.15);color:#93c5fd;border-color:rgba(79,142,247,.35);font-weight:500;}
+.weekbtn.today{border-color:rgba(52,211,153,.4);}
+.weekbtn.today.active{background:rgba(52,211,153,.15);color:#6ee7b7;border-color:rgba(52,211,153,.5);}
+.week-label{font-size:9px;color:var(--muted);text-align:center;margin-bottom:6px;font-family:'DM Mono',monospace;letter-spacing:.06em;}
 
+/* TEAM */
 .team-rows{display:flex;flex-direction:column;gap:5px;}
 .member-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface2);transition:opacity .2s;}
 .member-row.absent{opacity:.28;}
@@ -101,6 +87,7 @@ main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
 .loc-badge{font-size:9px;padding:2px 6px;border-radius:8px;font-weight:500;white-space:nowrap;}
 .loc-kantoor{background:rgba(79,142,247,.18);color:#93c5fd;}
 .loc-thuis{background:rgba(167,139,250,.18);color:#c4b5fd;}
+.loc-afwezig{background:rgba(248,113,113,.15);color:#fca5a5;}
 .m-type-sm{font-size:9px;padding:2px 5px;border-radius:8px;}
 .type-v{background:rgba(52,211,153,.15);color:#6ee7b7;}
 .type-f{background:rgba(245,158,11,.1);color:#fcd34d;}
@@ -109,6 +96,22 @@ main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
 .avail-no{background:var(--danger);}
 .avail-beperkt{background:var(--warn);}
 
+/* DAGPLANNING */
+.dag-plan{display:flex;flex-direction:column;gap:6px;}
+.dag-event{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface2);}
+.dag-event-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);min-width:44px;flex-shrink:0;padding-top:1px;}
+.dag-event-body{flex:1;}
+.dag-event-title{font-size:13px;color:var(--text);}
+.dag-event-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.dag-event-tag{display:inline-block;font-size:9px;padding:1px 6px;border-radius:8px;margin-left:6px;}
+.et-b{background:rgba(79,142,247,.18);color:#93c5fd;}
+.et-t{background:rgba(52,211,153,.18);color:#6ee7b7;}
+.et-p{background:rgba(167,139,250,.18);color:#c4b5fd;}
+.et-a{background:rgba(245,158,11,.18);color:#fcd34d;}
+.et-r{background:rgba(248,113,113,.15);color:#fca5a5;}
+.dag-leeg{font-size:13px;color:var(--muted);font-style:italic;}
+
+/* TAKEN */
 .task-list{display:flex;flex-direction:column;gap:8px;}
 .task-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface2);}
 .task-item.done{opacity:.4;}
@@ -126,6 +129,7 @@ main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
 .task-item.done .task-text{text-decoration:line-through;color:var(--muted);}
 .task-who{font-size:11px;color:var(--muted);margin-top:2px;}
 
+/* DEADLINES */
 .dl-list{display:flex;flex-direction:column;gap:8px;}
 .dl-item{display:flex;align-items:center;gap:10px;transition:opacity .2s;}
 .dl-item.dl-done{opacity:.35;}
@@ -138,12 +142,14 @@ main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
 .tg-a{background:rgba(245,158,11,.15);color:#fcd34d;}
 .tg-b{background:rgba(79,142,247,.15);color:#93c5fd;}
 
+/* OPMERKINGEN */
 .opm-list{display:flex;flex-direction:column;gap:7px;}
 .opm-item{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface2);}
 .opm-dot{width:6px;height:6px;border-radius:50%;background:var(--warn);flex-shrink:0;margin-top:5px;}
 .opm-text{font-size:13px;line-height:1.5;}
 .opm-empty{font-size:13px;color:var(--muted);font-style:italic;}
 
+/* VERGADERINGEN */
 .verg-row{display:flex;gap:8px;flex-wrap:wrap;}
 .verg-pill{padding:10px 16px;border-radius:var(--radius-sm);border:0.5px solid;}
 .verg-time{font-family:'DM Mono',monospace;font-size:11px;margin-bottom:2px;}
@@ -154,11 +160,12 @@ main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
 .vp-c{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.25);color:#fdba74;}
 .vp-t{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.25);color:#6ee7b7;}
 .no-verg{font-size:13px;color:var(--muted);}
+
 footer{font-size:10px;color:var(--muted);text-align:center;font-family:'DM Mono',monospace;padding:4px 0;}
 .reset-btn{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);padding:4px 10px;border-radius:6px;border:0.5px solid var(--border);background:transparent;cursor:pointer;}
 
-/* ── ADMIN ── */
-.admin-wrap{max-width:900px;margin:0 auto;padding:24px 20px 80px;}
+/* ADMIN */
+.admin-wrap{max-width:960px;margin:0 auto;padding:24px 20px 80px;}
 .admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
 .admin-title{font-size:20px;font-weight:500;}
 .back-btn{font-size:12px;font-family:'DM Mono',monospace;color:var(--muted);padding:7px 14px;border-radius:8px;border:0.5px solid var(--border2);background:transparent;cursor:pointer;}
@@ -201,61 +208,36 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
 .av-swatch{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:500;}
 .av-swatch.sel{border-color:white;}
 .logout-btn{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);padding:4px 10px;border-radius:6px;border:0.5px solid var(--border);background:transparent;cursor:pointer;margin-left:8px;}
+
+/* PLANNING ADMIN */
+.plan-week-nav{display:flex;gap:6px;margin-bottom:16px;}
+.plan-week-btn{padding:6px 16px;border-radius:8px;border:0.5px solid var(--border2);background:transparent;font-size:12px;color:var(--muted);cursor:pointer;}
+.plan-week-btn.active{background:rgba(79,142,247,.15);color:#93c5fd;border-color:rgba(79,142,247,.35);}
+.plan-day-block{background:var(--surface2);border-radius:var(--radius-sm);padding:14px;margin-bottom:10px;border:0.5px solid var(--border);}
+.plan-day-title{font-size:12px;font-weight:500;color:var(--text);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.plan-day-title span{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
+.plan-event-row{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--border);}
+.plan-event-row:last-child{border-bottom:none;}
+.plan-note{width:100%;background:var(--bg);border:0.5px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 12px;outline:none;resize:none;min-height:36px;line-height:1.5;}
+.plan-note:focus{border-color:rgba(79,142,247,.5);}
+.tag-sel{background:var(--bg);border:0.5px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 6px;outline:none;cursor:pointer;width:90px;}
+.plan-today-badge{display:inline-block;font-size:9px;padding:1px 6px;border-radius:8px;background:rgba(52,211,153,.15);color:#6ee7b7;margin-left:6px;}
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
 <div id="view-loading">
   <div class="spinner"></div>
   <div class="load-txt" id="load-txt">Dashboard laden...</div>
 </div>
 
-<!-- SETUP (eerste keer) -->
-<div id="view-setup">
-  <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;">
-  <div class="setup-card">
-    <h1>Dashboard instellen</h1>
-    <p>Volg deze 3 stappen om het dashboard in te stellen. Dit doe je eenmalig — daarna werkt alles automatisch.</p>
-    <div class="setup-steps">
-
-      <div class="step">
-        <div class="step-num">STAP 1</div>
-        <div class="step-title">Maak een gratis JSONBin account</div>
-        <p>JSONBin is een gratis online database. Ga naar <a href="https://jsonbin.io" target="_blank">jsonbin.io</a> → klik op "Sign Up" → maak een gratis account aan.</p>
-      </div>
-
-      <div class="step">
-        <div class="step-num">STAP 2</div>
-        <div class="step-title">Haal je API sleutel op</div>
-        <p>Na het inloggen op JSONBin: klik rechtsboven op je naam → "API Keys" → kopieer de sleutel die begint met <code style="background:var(--bg);padding:1px 5px;border-radius:4px;font-size:11px;">$2b$...</code></p>
-        <input class="fi" type="text" id="setup-apikey" placeholder="$2b$10$..." oninput="checkSetup()">
-      </div>
-
-      <div class="step">
-        <div class="step-num">STAP 3</div>
-        <div class="step-title">Kies een beheerwachtwoord</div>
-        <p>Alleen wie dit wachtwoord kent kan het dashboard aanpassen. Het team ziet alles maar kan niets wijzigen.</p>
-        <input class="fi pw" type="password" id="setup-pw" placeholder="Kies een wachtwoord" oninput="checkSetup()">
-        <input class="fi pw" type="password" id="setup-pw2" placeholder="Herhaal wachtwoord" oninput="checkSetup()">
-        <div class="err-msg" id="setup-err">Wachtwoorden komen niet overeen.</div>
-      </div>
-
-    </div>
-    <button class="setup-btn" id="setup-go" onclick="doSetup()" disabled>Dashboard aanmaken</button>
-    <div class="setup-note">Alles wordt veilig opgeslagen in je eigen JSONBin account.</div>
-  </div>
-  </div>
-</div>
-
-<!-- LOGIN MODAL -->
 <div id="view-login" style="display:none;align-items:center;justify-content:center;min-height:100vh;">
   <div class="login-card">
     <h2>Beheerpaneel</h2>
-    <p>Voer het beheerwachtwoord in om aanpassingen te maken.</p>
-    <input class="fi pw" type="password" id="login-pw" placeholder="Wachtwoord" onkeydown="if(event.key==='Enter')doLogin()">
+    <p>Voer het beheerwachtwoord in.</p>
+    <input class="fi" type="password" id="login-pw" placeholder="Wachtwoord" onkeydown="if(event.key==='Enter')doLogin()">
     <div class="err-msg" id="login-err">Wachtwoord incorrect.</div>
-    <div class="login-row" style="margin-top:12px;">
+    <div class="login-row">
       <button class="cancel-btn" onclick="cancelLogin()">Annuleren</button>
       <button class="ok-btn" onclick="doLogin()">Inloggen</button>
     </div>
@@ -286,23 +268,32 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
   </div>
 </header>
 <main>
+  <!-- Team -->
   <div class="card">
-    <div class="card-label">Team vandaag <span id="aanwezig-count" style="color:var(--green);font-family:'DM Mono',monospace;font-size:10px;"></span></div>
-    <div class="daynav" id="daynav"></div>
+    <div class="card-label">Team <span id="aanwezig-count" style="color:var(--green);font-family:'DM Mono',monospace;font-size:10px;"></span></div>
+    <div id="week-nav-tv" style="margin-bottom:6px;"></div>
     <div class="team-rows" id="teamgrid"></div>
   </div>
+
+  <!-- Dagplanning -->
   <div class="card">
-    <div class="card-label">Mededelingen</div>
-    <div class="opm-list" id="opm-list"></div>
+    <div class="card-label">Planning <span id="plan-dag-label" style="color:var(--accent);"></span></div>
+    <div class="dag-plan" id="dag-plan"></div>
   </div>
+
+  <!-- Deadlines -->
   <div class="card">
     <div class="card-label">Deadlines <span id="dl-maand-tv"></span></div>
     <div class="dl-list" id="dl-list"></div>
   </div>
+
+  <!-- Taken -->
   <div class="card s2">
     <div class="card-label">Teamtaken deze week <button class="reset-btn" onclick="resetTaken()">↺ reset week</button></div>
     <div class="task-list" id="takenlijst"></div>
   </div>
+
+  <!-- Vergaderingen -->
   <div class="card">
     <div class="card-label">Vergaderingen vandaag</div>
     <div class="verg-row" id="vergrow"></div>
@@ -322,27 +313,42 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
     <button class="back-btn" onclick="closeAdmin()">← Terug naar dashboard</button>
   </div>
   <div class="admin-tabs">
-    <button class="tab-btn active" onclick="switchTab('taken')">Teamtaken</button>
+    <button class="tab-btn active" onclick="switchTab('planning')">Planning 2 weken</button>
+    <button class="tab-btn" onclick="switchTab('taken')">Teamtaken</button>
     <button class="tab-btn" onclick="switchTab('opmerkingen')">Mededelingen</button>
     <button class="tab-btn" onclick="switchTab('team')">Teamleden</button>
     <button class="tab-btn" onclick="switchTab('deadlines')">Deadlines</button>
     <button class="tab-btn" onclick="switchTab('vergad')">Vergaderingen</button>
   </div>
-  <div class="tab-panel active" id="tab-taken">
+
+  <div class="tab-panel active" id="tab-planning">
+    <div class="admin-section">
+      <h2>Dagplanning — komende 2 weken</h2>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Voeg per dag afspraken, taken of mededelingen toe. Deze zijn zichtbaar op het dashboard wanneer die dag actief is.</p>
+      <div class="plan-week-nav">
+        <button class="plan-week-btn active" onclick="setPlanWeek(0)" id="pwb0">Deze week</button>
+        <button class="plan-week-btn" onclick="setPlanWeek(1)" id="pwb1">Volgende week</button>
+      </div>
+      <div id="admin-planning"></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-taken">
     <div class="admin-section"><h2>Teamtaken deze week</h2><div id="admin-taken"></div><button class="add-btn" onclick="addTaak()">+ Taak toevoegen</button></div>
   </div>
   <div class="tab-panel" id="tab-opmerkingen">
-    <div class="admin-section"><h2>Mededelingen</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Zichtbaar op het dashboard voor het hele team.</p><div id="admin-opm"></div><button class="add-btn" onclick="addOpm()">+ Mededeling toevoegen</button></div>
+    <div class="admin-section"><h2>Mededelingen</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Permanente mededelingen voor het hele team.</p><div id="admin-opm"></div><button class="add-btn" onclick="addOpm()">+ Mededeling toevoegen</button></div>
   </div>
   <div class="tab-panel" id="tab-team">
-    <div class="admin-section"><h2>Teamleden &amp; status per dag</h2><div id="admin-team"></div><button class="add-btn" onclick="addLid()">+ Teamlid toevoegen</button></div>
+    <div class="admin-section"><h2>Teamleden &amp; standaard aanwezigheid</h2><div id="admin-team"></div><button class="add-btn" onclick="addLid()">+ Teamlid toevoegen</button></div>
   </div>
   <div class="tab-panel" id="tab-deadlines">
     <div class="admin-section"><h2>Deadlines per maand</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Automatisch gesorteerd op datum bij opslaan.</p><div id="admin-dl"></div></div>
   </div>
   <div class="tab-panel" id="tab-vergad">
-    <div class="admin-section"><h2>Vaste vergaderingen per dag</h2><div id="admin-verg"></div></div>
+    <div class="admin-section"><h2>Vaste vergaderingen per dag van de week</h2><div id="admin-verg"></div></div>
   </div>
+
   <div class="save-bar">
     <span class="save-msg" id="save-msg"></span>
     <button class="save-btn" id="save-btn" onclick="saveAll()">Opslaan &amp; publiceren</button>
@@ -351,9 +357,18 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
 </div>
 
 <script>
+/* ══ CONFIG (ingebakken) ══ */
+const CFG={
+  apiKey:'$2a$10$BtHZ/Eb32yTpLPLAodwcUOSh.KFe8/iDuO8PRwyUJVPBPVI1/2PWi',
+  binId:'69e0d7c8aaba8821970682e4',
+  pwHash:'90999ebb18d79e32a1f708c35afc621ee0b920908c2cb923fa254f505ecc8f7e'
+};
+
 /* ══ CONSTANTEN ══ */
 const MAANDEN=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+const MAANDEN_KORT=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
 const DAGEN_LANG=['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'];
+const DAGEN_KORT=['zo','ma','di','wo','do','vr','za'];
 const DAGEN_SHORT=['Ma','Di','Wo','Do','Vr'];
 const MAAND_INFO=[
   {t:'Zeer drukke maand',c:'badge-red'},{t:'Kalme maand',c:'badge-green'},
@@ -375,7 +390,34 @@ const VERG_COLORS=[{v:'vp-b',l:'Blauw'},{v:'vp-t',l:'Groen'},{v:'vp-p',l:'Paars'
 const URG_OPTS=['urgent','binnenkort','deze maand'];
 const URG_COLORS={'urgent':'#f87171','binnenkort':'#f59e0b','deze maand':'#4f8ef7'};
 const URG_TAG={'urgent':'tg-r','binnenkort':'tg-a','deze maand':'tg-b'};
+const EVENT_TAGS=[{v:'et-b',l:'Info'},{v:'et-t',l:'Vergadering'},{v:'et-p',l:'Klant'},{v:'et-a',l:'Deadline'},{v:'et-r',l:'Urgent'}];
 const JSONBIN_URL='https://api.jsonbin.io/v3/b';
+
+/* ══ DATUMHELPERS ══ */
+function datumKey(d){
+  // YYYY-MM-DD als sleutel
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function getMaandag(d){
+  const day=d.getDay();
+  const diff=day===0?-6:1-day;
+  const ma=new Date(d);
+  ma.setDate(d.getDate()+diff);
+  ma.setHours(0,0,0,0);
+  return ma;
+}
+function getWeekDagen(maandag){
+  return Array.from({length:5},(_,i)=>{const d=new Date(maandag);d.setDate(maandag.getDate()+i);return d;});
+}
+function formatDatum(d){
+  return DAGEN_KORT[d.getDay()]+' '+d.getDate()+' '+MAANDEN_KORT[d.getMonth()];
+}
+function isVandaag(d){
+  const n=new Date();
+  return d.getDate()===n.getDate()&&d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear();
+}
+// Weekdag index 0=Ma t/m 4=Vr
+function weekdagIndex(d){return(d.getDay()+6)%7;}
 
 /* ══ DEFAULT DATA ══ */
 const DEF={
@@ -398,6 +440,8 @@ const DEF={
     {t:'Mailbox opvolging klanten',w:'Milan',done:false},
   ],
   opmerkingen:[],
+  planning:{}, // key=YYYY-MM-DD, value=[{tijd,titel,sub,tag}]
+  dagOverrides:{}, // key=YYYY-MM-DD, value={[lidIndex]:{loc,av,aan}}
   deadlines:[
     [{d:'15/01',l:'Aangifte BV',urg:'urgent',bc:'#f87171',bw:20,done:false},{d:'20/01',l:'BTW kwartaal + maand',urg:'urgent',bc:'#f87171',bw:32,done:false},{d:'31/01',l:'Dossiers 30/06 indienen',urg:'deze maand',bc:'#4f8ef7',bw:72,done:false}],
     [{d:'20/02',l:'BTW maand',urg:'binnenkort',bc:'#f59e0b',bw:55,done:false},{d:'29/02',l:'Fiches 281.20',urg:'deze maand',bc:'#4f8ef7',bw:80,done:false}],
@@ -422,78 +466,33 @@ const DEF={
 };
 
 /* ══ STATE ══ */
-let cfg={apiKey:'$2a$10$BtHZ/Eb32yTpLPLAodwcUOSh.KFe8/iDuO8PRwyUJVPBPVI1/2PWi',binId:'69e0d7c8aaba8821970682e4',pwHash:'90999ebb18d79e32a1f708c35afc621ee0b920908c2cb923fa254f505ecc8f7e'};
-let team=[],taken=[],opmerkingen=[],deadlines=[],vergad=[];
-let activeDay=(new Date().getDay()+6)%7;
-if(activeDay>4)activeDay=0;
+let team=[],taken=[],opmerkingen=[],planning={},dagOverrides={},deadlines=[],vergad=[];
+let activeDate=new Date();
 let isAdmin=false;
+let planWeek=0; // 0=deze week, 1=volgende week
 let refreshTimer=null;
 
-/* ══ HASH (simpel, niet cryptografisch maar voldoende) ══ */
-async function hashPw(pw){
-  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pw));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-
-/* ══ SETUP ══ */
-function checkSetup(){
-  const k=document.getElementById('setup-apikey').value.trim();
-  const p=document.getElementById('setup-pw').value;
-  const p2=document.getElementById('setup-pw2').value;
-  const err=document.getElementById('setup-err');
-  const btn=document.getElementById('setup-go');
-  if(p&&p2&&p!==p2){err.style.display='block';}else{err.style.display='none';}
-  btn.disabled=!(k.length>10&&p.length>=4&&p===p2);
-}
-
-async function doSetup(){
-  const apiKey=document.getElementById('setup-apikey').value.trim();
-  const pw=document.getElementById('setup-pw').value;
-  showLoad('Eerste data aanmaken...');
-  hideAll();document.getElementById('view-loading').style.display='flex';
-  try{
-    const res=await fetch(JSONBIN_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-Master-Key':apiKey,'X-Bin-Name':'ob-dashboard','X-Bin-Private':'false'},
-      body:JSON.stringify(DEF)
-    });
-    const data=await res.json();
-    if(!data.metadata||!data.metadata.id)throw new Error('Aanmaken mislukt');
-    const binId=data.metadata.id;
-    const pwHash=await hashPw(pw);
-    cfg={apiKey,binId,pwHash};
-    localStorage.setItem('ob-cfg',JSON.stringify(cfg));
-    await initDashboard();
-  }catch(e){
-    hideAll();document.getElementById('view-setup').style.display='block';
-    alert('Er ging iets mis: '+e.message+'\nControleer je API sleutel.');
-  }
-}
-
-/* ══ JSONBIN API ══ */
+/* ══ JSONBIN ══ */
 async function jbLoad(){
   setSyncStatus('busy');
-  const res=await fetch(JSONBIN_URL+'/'+cfg.binId+'/latest',{
-    headers:{'X-Master-Key':cfg.apiKey,'X-Bin-Meta':'false'}
+  const res=await fetch(JSONBIN_URL+'/'+CFG.binId+'/latest',{
+    headers:{'X-Master-Key':CFG.apiKey,'X-Bin-Meta':'false'}
   });
-  if(!res.ok)throw new Error('Load failed '+res.status);
+  if(!res.ok)throw new Error('Load failed');
   const data=await res.json();
   setSyncStatus('ok');
   return data;
 }
-
 async function jbSave(payload){
   setSyncStatus('busy');
-  const res=await fetch(JSONBIN_URL+'/'+cfg.binId,{
+  const res=await fetch(JSONBIN_URL+'/'+CFG.binId,{
     method:'PUT',
-    headers:{'Content-Type':'application/json','X-Master-Key':cfg.apiKey},
+    headers:{'Content-Type':'application/json','X-Master-Key':CFG.apiKey},
     body:JSON.stringify(payload)
   });
-  if(!res.ok)throw new Error('Save failed '+res.status);
+  if(!res.ok)throw new Error('Save failed');
   setSyncStatus('ok');
 }
-
-/* ══ SYNC STATUS ══ */
 function setSyncStatus(s){
   const dot=document.getElementById('sync-dot');
   const lbl=document.getElementById('sync-lbl');
@@ -504,82 +503,53 @@ function setSyncStatus(s){
   else{dot.classList.add('err');lbl.textContent='offline';}
 }
 
+/* ══ HASH ══ */
+async function hashPw(pw){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pw));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
 /* ══ INIT ══ */
-function showLoad(t){document.getElementById('load-txt').textContent=t||'Laden...';}
 function hideAll(){
-  ['view-loading','view-setup','view-tv','view-admin','view-login'].forEach(id=>{
+  ['view-loading','view-tv','view-admin','view-login'].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.style.display='none';
   });
 }
-
-async function initDashboard(){
-  showLoad('Dashboard laden...');
-  try{
-    const data=await jbLoad();
-    applyData(data);
-    hideAll();
-    document.getElementById('view-tv').style.display='block';
-    updateClock();renderNav();renderTeam();renderVergad();renderDeadlines();renderTaken();renderOpm();
-    if(refreshTimer)clearInterval(refreshTimer);
-    refreshTimer=setInterval(autoRefresh,60000);
-    setInterval(updateClock,30000);
-  }catch(e){
-    setSyncStatus('err');
-    // fallback lokaal
-    applyData(DEF);
-    hideAll();
-    document.getElementById('view-tv').style.display='block';
-    updateClock();renderNav();renderTeam();renderVergad();renderDeadlines();renderTaken();renderOpm();
-  }
-}
-
 function applyData(d){
   team=d.team||DEF.team;
   taken=d.taken||DEF.taken;
   opmerkingen=d.opmerkingen||[];
+  planning=d.planning||{};
+  dagOverrides=d.dagOverrides||{};
   deadlines=d.deadlines||DEF.deadlines;
   vergad=d.vergad||DEF.vergad;
 }
-
+async function initDashboard(){
+  try{
+    const data=await jbLoad();
+    applyData(data);
+  }catch(e){
+    applyData(DEF);
+    setSyncStatus('err');
+  }
+  hideAll();
+  document.getElementById('view-tv').style.display='block';
+  updateClock();
+  renderAll();
+  if(refreshTimer)clearInterval(refreshTimer);
+  refreshTimer=setInterval(autoRefresh,60000);
+  setInterval(updateClock,30000);
+}
 async function autoRefresh(){
   try{
     const data=await jbLoad();
     applyData(data);
-    renderTeam();renderTaken();renderOpm();renderDeadlines();renderVergad();
+    renderAll();
   }catch(e){setSyncStatus('err');}
-  updateClock();renderNav();
+  updateClock();
 }
-
-/* ══ LOGIN ══ */
-function openAdmin(){
-  if(isAdmin){showAdmin();return;}
-  hideAll();
-  document.getElementById('view-login').style.display='flex';
-  document.getElementById('login-pw').value='';
-  document.getElementById('login-err').style.display='none';
-  setTimeout(()=>document.getElementById('login-pw').focus(),100);
-}
-function cancelLogin(){
-  hideAll();document.getElementById('view-tv').style.display='block';
-}
-async function doLogin(){
-  const pw=document.getElementById('login-pw').value;
-  const hash=await hashPw(pw);
-  if(hash===cfg.pwHash){
-    isAdmin=true;
-    showAdmin();
-  }else{
-    document.getElementById('login-err').style.display='block';
-  }
-}
-function logout(){isAdmin=false;closeAdmin();}
-
-function showAdmin(){
-  hideAll();
-  document.getElementById('view-admin').style.display='block';
-  renderAdminAll();
-}
+function renderAll(){renderWeekNav();renderTeam();renderDagPlan();renderDeadlines();renderTaken();renderVergad();}
 
 /* ══ CLOCK ══ */
 function updateClock(){
@@ -595,37 +565,103 @@ function updateClock(){
   document.getElementById('footer-ts').textContent='Vernieuwd om '+h+':'+m+' — Online Boekhouders BV';
 }
 
-/* ══ TV RENDERS ══ */
-function renderNav(){
-  document.getElementById('daynav').innerHTML=DAGEN_SHORT.map((d,i)=>
-    `<button class="daybtn${i===activeDay?' active':''}" onclick="setDay(${i})">${d}</button>`
-  ).join('');
+/* ══ WEEK NAV TV ══ */
+function renderWeekNav(){
+  const vandaag=new Date();
+  const ma=getMaandag(vandaag);
+  // Toon deze week + volgende week (10 dagen)
+  const dagen=[];
+  for(let i=0;i<10;i++){const d=new Date(ma);d.setDate(ma.getDate()+i);if(d.getDay()!==0&&d.getDay()!==6)dagen.push(d);}
+  const nav=document.getElementById('week-nav-tv');
+  // splitsen in 2 rijen
+  const w1=dagen.slice(0,5);
+  const w2=dagen.slice(5,10);
+  const renderRij=(rij,label)=>
+    `<div style="margin-bottom:4px;"><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:3px;">${label}</div>`+
+    `<div style="display:flex;gap:4px;">`+
+    rij.map(d=>{
+      const key=datumKey(d);
+      const isAct=datumKey(activeDate)===key;
+      const isHvd=isVandaag(d);
+      return`<button onclick="setActiveDate('${key}')" style="flex:1;padding:4px 2px;border-radius:6px;border:0.5px solid ${isAct?'rgba(79,142,247,.5)':isHvd?'rgba(52,211,153,.4)':'var(--border)'};background:${isAct?'rgba(79,142,247,.15)':'transparent'};font-size:10px;font-family:'DM Mono',monospace;color:${isAct?'#93c5fd':isHvd?'#6ee7b7':'var(--muted)'};cursor:pointer;text-align:center;line-height:1.4;">
+        <div>${DAGEN_KORT[d.getDay()]}</div><div>${d.getDate()}</div>
+      </button>`;
+    }).join('')+`</div></div>`;
+  nav.innerHTML=renderRij(w1,'Deze week')+renderRij(w2,'Volgende week');
+}
+
+function setActiveDate(key){
+  const parts=key.split('-');
+  activeDate=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
+  renderWeekNav();
+  renderTeam();
+  renderDagPlan();
+  renderVergad();
+}
+
+/* ══ TEAM ══ */
+function getTeamStatusVoorDag(datum){
+  const key=datumKey(datum);
+  const wdi=weekdagIndex(datum);
+  return team.map((m,mi)=>{
+    const ovr=dagOverrides[key]&&dagOverrides[key][mi];
+    const basis=m.da[wdi]||{aan:0,loc:'kantoor',av:'ja'};
+    return ovr?{...basis,...ovr}:basis;
+  });
 }
 function renderTeam(){
-  const ac=team.filter(m=>m.da[activeDay]&&m.da[activeDay].aan).length;
+  const statussen=getTeamStatusVoorDag(activeDate);
+  const ac=statussen.filter(s=>s.aan).length;
   document.getElementById('aanwezig-count').textContent=ac+'/'+team.length;
-  document.getElementById('teamgrid').innerHTML=team.map(m=>{
-    const dag=m.da[activeDay]||{aan:0,loc:'kantoor',av:'ja'};
-    const aan=dag.aan;
-    const dotCls=!aan?'avail-no':(dag.av==='nee'?'avail-no':dag.av==='beperkt'?'avail-beperkt':'avail-yes');
-    return`<div class="member-row${aan?'':' absent'}">
+  const isHvd=isVandaag(activeDate);
+  document.getElementById('teamgrid').innerHTML=team.map((m,mi)=>{
+    const s=statussen[mi];
+    const dotCls=!s.aan?'avail-no':(s.av==='nee'?'avail-no':s.av==='beperkt'?'avail-beperkt':'avail-yes');
+    return`<div class="member-row${s.aan?'':' absent'}">
       <div class="avatar-sm ${m.av||'av-b'}">${m.i}</div>
       <span class="m-name-sm">${m.n}</span>
       <span class="m-role-sm">${m.r}</span>
       <div class="m-badges">
-        ${aan?`<span class="loc-badge ${dag.loc==='thuis'?'loc-thuis':'loc-kantoor'}">${dag.loc}</span>`:''}
+        ${s.aan?`<span class="loc-badge ${s.loc==='thuis'?'loc-thuis':'loc-kantoor'}">${s.loc}</span>`:`<span class="loc-badge loc-afwezig">afwezig</span>`}
         <span class="m-type-sm ${m.type==='v'?'type-v':'type-f'}">${m.type==='v'?'vast':'free'}</span>
         <div class="avail-dot ${dotCls}"></div>
       </div>
     </div>`;
   }).join('');
 }
+
+/* ══ DAGPLANNING ══ */
+function renderDagPlan(){
+  const key=datumKey(activeDate);
+  const label=document.getElementById('plan-dag-label');
+  label.textContent='— '+formatDatum(activeDate)+(isVandaag(activeDate)?' (vandaag)':'');
+  const events=planning[key]||[];
+  const el=document.getElementById('dag-plan');
+  if(!events.length){
+    el.innerHTML=`<span class="dag-leeg">Geen planning voor deze dag</span>`;
+    return;
+  }
+  el.innerHTML=events.map(e=>
+    `<div class="dag-event">
+      <div class="dag-event-time">${e.tijd||'—'}</div>
+      <div class="dag-event-body">
+        <div class="dag-event-title">${esc(e.titel)}<span class="dag-event-tag ${e.tag||'et-b'}">${EVENT_TAGS.find(t=>t.v===e.tag)?.l||'Info'}</span></div>
+        ${e.sub?`<div class="dag-event-sub">${esc(e.sub)}</div>`:''}
+      </div>
+    </div>`
+  ).join('');
+}
+
+/* ══ VERGADERINGEN ══ */
 function renderVergad(){
-  const vg=vergad[activeDay]||[];
+  const wdi=weekdagIndex(activeDate);
+  const vg=vergad[wdi]||[];
   const el=document.getElementById('vergrow');
-  if(!vg.length){el.innerHTML=`<span class="no-verg">Geen vaste vergaderingen vandaag</span>`;return;}
+  if(!vg.length){el.innerHTML=`<span class="no-verg">Geen vaste vergaderingen</span>`;return;}
   el.innerHTML=vg.map(v=>`<div class="verg-pill ${v.c}"><div class="verg-time">${v.t}</div><div class="verg-name">${v.n}</div><div class="verg-sub">${v.s}</div></div>`).join('');
 }
+
+/* ══ DEADLINES & TAKEN ══ */
 function parseDatSort(d){const p=(d||'').split('/');if(p.length<2)return 9999;return parseInt(p[1]||0)*100+parseInt(p[0]||0);}
 function sortDL(mi){if(deadlines[mi])deadlines[mi].sort((a,b)=>parseDatSort(a.d)-parseDatSort(b.d));}
 function renderDeadlines(){
@@ -648,29 +684,152 @@ function renderTaken(){
     </div>`
   ).join('');
 }
-function renderOpm(){
-  const el=document.getElementById('opm-list');
-  if(!opmerkingen.length){el.innerHTML=`<span class="opm-empty">Geen mededelingen</span>`;return;}
-  el.innerHTML=opmerkingen.map(o=>`<div class="opm-item"><div class="opm-dot"></div><span class="opm-text">${esc(o.t)}</span></div>`).join('');
-}
-function setDay(i){activeDay=i;renderNav();renderTeam();renderVergad();}
 function resetTaken(){if(!isAdmin)return;taken.forEach(t=>t.done=false);renderTaken();}
 
-/* ══ ADMIN RENDERS ══ */
-function closeAdmin(){hideAll();document.getElementById('view-tv').style.display='block';renderAll();}
-function renderAll(){renderTaken();renderTeam();renderNav();renderVergad();renderDeadlines();renderOpm();}
+/* ══ LOGIN ══ */
+function openAdmin(){
+  if(isAdmin){showAdmin();return;}
+  hideAll();
+  document.getElementById('view-login').style.display='flex';
+  document.getElementById('login-pw').value='';
+  document.getElementById('login-err').style.display='none';
+  setTimeout(()=>document.getElementById('login-pw').focus(),100);
+}
+function cancelLogin(){hideAll();document.getElementById('view-tv').style.display='block';}
+async function doLogin(){
+  const pw=document.getElementById('login-pw').value;
+  const hash=await hashPw(pw);
+  if(hash===CFG.pwHash){isAdmin=true;showAdmin();}
+  else{document.getElementById('login-err').style.display='block';}
+}
+function logout(){isAdmin=false;closeAdmin();}
+
+/* ══ ADMIN ══ */
+function showAdmin(){
+  hideAll();
+  document.getElementById('view-admin').style.display='block';
+  renderAdminAll();
+}
+function closeAdmin(){
+  hideAll();
+  document.getElementById('view-tv').style.display='block';
+  renderAll();
+}
 function switchTab(tab){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['taken','opmerkingen','team','deadlines','vergad'][i]===tab));
+  const tabs=['planning','taken','opmerkingen','team','deadlines','vergad'];
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',tabs[i]===tab));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
 }
-function renderAdminAll(){renderAdminTaken();renderAdminOpm();renderAdminTeam();renderAdminDL();renderAdminVerg();}
+function renderAdminAll(){renderAdminPlanning();renderAdminTaken();renderAdminOpm();renderAdminTeam();renderAdminDL();renderAdminVerg();}
 
+/* ══ PLANNING ADMIN ══ */
+let planWeekOffset=0;
+function setPlanWeek(w){
+  planWeekOffset=w;
+  document.getElementById('pwb0').classList.toggle('active',w===0);
+  document.getElementById('pwb1').classList.toggle('active',w===1);
+  renderAdminPlanning();
+}
+
+function renderAdminPlanning(){
+  const vandaag=new Date();
+  const ma=getMaandag(vandaag);
+  const startDag=new Date(ma);
+  startDag.setDate(ma.getDate()+planWeekOffset*5);
+  const dagen=Array.from({length:5},(_,i)=>{const d=new Date(startDag);d.setDate(startDag.getDate()+i);return d;});
+
+  document.getElementById('admin-planning').innerHTML=dagen.map(dag=>{
+    const key=datumKey(dag);
+    const events=planning[key]||[];
+    const hvd=isVandaag(dag);
+    const ovrs=dagOverrides[key]||{};
+
+    const eventsHtml=events.map((e,ei)=>
+      `<div class="plan-event-row">
+        <input class="ai" style="width:65px;" value="${esc(e.tijd)}" placeholder="09:00" oninput="setPlanEvt('${key}',${ei},'tijd',this.value)">
+        <input class="ai" style="flex:1;" value="${esc(e.titel)}" placeholder="Omschrijving" oninput="setPlanEvt('${key}',${ei},'titel',this.value)">
+        <input class="ai sm" style="flex:1;" value="${esc(e.sub)}" placeholder="Detail (optioneel)" oninput="setPlanEvt('${key}',${ei},'sub',this.value)">
+        <select class="tag-sel" onchange="setPlanEvt('${key}',${ei},'tag',this.value)">
+          ${EVENT_TAGS.map(t=>`<option value="${t.v}"${e.tag===t.v?' selected':''}>${t.l}</option>`).join('')}
+        </select>
+        <button class="del-btn" onclick="delPlanEvt('${key}',${ei})">×</button>
+      </div>`
+    ).join('');
+
+    // Team overrides voor deze dag
+    const teamHtml=team.map((m,mi)=>{
+      const wdi=weekdagIndex(dag);
+      const basis=m.da[wdi]||{aan:0,loc:'kantoor',av:'ja'};
+      const ovr=ovrs[mi]||{};
+      const huidigAan=ovr.aan!==undefined?ovr.aan:basis.aan;
+      const huidigLoc=ovr.loc||basis.loc;
+      const huidigAv=ovr.av||basis.av;
+      return`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:0.5px solid var(--border);">
+        <div class="avatar-sm ${m.av||'av-b'}" style="width:22px;height:22px;font-size:9px;">${m.i}</div>
+        <span style="font-size:12px;flex:1;">${m.n}</span>
+        <input type="checkbox" style="accent-color:var(--accent);width:13px;height:13px;cursor:pointer;" ${huidigAan?'checked':''} onchange="setDagOvr('${key}',${mi},'aan',this.checked?1:0)">
+        <select class="asel" style="width:85px;font-size:11px;" ${!huidigAan?'disabled':''} onchange="setDagOvr('${key}',${mi},'loc',this.value)">
+          <option value="kantoor"${huidigLoc==='kantoor'?' selected':''}>Kantoor</option>
+          <option value="thuis"${huidigLoc==='thuis'?' selected':''}>Thuis</option>
+        </select>
+        <select class="asel" style="width:120px;font-size:11px;" ${!huidigAan?'disabled':''} onchange="setDagOvr('${key}',${mi},'av',this.value)">
+          <option value="ja"${huidigAv==='ja'?' selected':''}>Beschikbaar</option>
+          <option value="beperkt"${huidigAv==='beperkt'?' selected':''}>Beperkt</option>
+          <option value="nee"${huidigAv==='nee'?' selected':''}>Niet beschikbaar</option>
+        </select>
+      </div>`;
+    }).join('');
+
+    return`<div class="plan-day-block">
+      <div class="plan-day-title">
+        ${DAGEN_LANG[dag.getDay()].charAt(0).toUpperCase()+DAGEN_LANG[dag.getDay()].slice(1)} ${dag.getDate()} ${MAANDEN[dag.getMonth()]}
+        ${hvd?'<span class="plan-today-badge">vandaag</span>':''}
+        <span>${key}</span>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Afspraken & planning</div>
+        ${eventsHtml}
+        <button class="add-btn" style="margin-top:6px;" onclick="addPlanEvt('${key}')">+ Toevoegen</button>
+      </div>
+      <div>
+        <div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Aanwezigheid team deze dag</div>
+        ${teamHtml}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setPlanEvt(key,idx,field,val){
+  if(!planning[key])planning[key]=[];
+  if(!planning[key][idx])planning[key][idx]={tijd:'',titel:'',sub:'',tag:'et-b'};
+  planning[key][idx][field]=val;
+}
+function addPlanEvt(key){
+  if(!planning[key])planning[key]=[];
+  planning[key].push({tijd:'',titel:'',sub:'',tag:'et-b'});
+  renderAdminPlanning();
+}
+function delPlanEvt(key,idx){
+  if(planning[key])planning[key].splice(idx,1);
+  renderAdminPlanning();
+}
+function setDagOvr(key,mi,field,val){
+  if(!dagOverrides[key])dagOverrides[key]={};
+  if(!dagOverrides[key][mi]){
+    const wdi=weekdagIndex(new Date(key));
+    dagOverrides[key][mi]={...team[mi].da[wdi]};
+  }
+  dagOverrides[key][mi][field]=val;
+  renderAdminPlanning();
+}
+
+/* ══ TAKEN ADMIN ══ */
 function renderAdminTaken(){
   document.getElementById('admin-taken').innerHTML=taken.map((tk,i)=>
     `<div class="admin-task">
       <div class="prio-num ${PNCS[i]||'pn4'}" style="flex-shrink:0;">${i+1}</div>
-      <input class="ai" style="flex:1;" value="${esc(tk.t)}" placeholder="Taakomschrijving" oninput="taken[${i}].t=this.value">
+      <input class="ai" style="flex:1;" value="${esc(tk.t)}" oninput="taken[${i}].t=this.value">
       <input class="ai sm" style="width:150px;" value="${esc(tk.w)}" placeholder="Wie?" oninput="taken[${i}].w=this.value">
       <button class="del-btn" onclick="delTaak(${i})">×</button>
     </div>`
@@ -679,6 +838,7 @@ function renderAdminTaken(){
 function addTaak(){taken.push({t:'Nieuwe taak',w:'',done:false});renderAdminTaken();}
 function delTaak(i){taken.splice(i,1);renderAdminTaken();}
 
+/* ══ OPM ADMIN ══ */
 function renderAdminOpm(){
   document.getElementById('admin-opm').innerHTML=opmerkingen.map((o,i)=>
     `<div class="opm-admin-item">
@@ -691,6 +851,7 @@ function renderAdminOpm(){
 function addOpm(){opmerkingen.push({t:''});renderAdminOpm();}
 function delOpm(i){opmerkingen.splice(i,1);renderAdminOpm();}
 
+/* ══ TEAM ADMIN ══ */
 function renderAdminTeam(){
   document.getElementById('admin-team').innerHTML=team.map((m,mi)=>{
     const avS=AV_OPTS.map(a=>`<div class="av-swatch ${a.cls}${m.av===a.cls?' sel':''}" style="background:${a.bg};color:${a.fg};" onclick="team[${mi}].av='${a.cls}';renderAdminTeam();">${m.i}</div>`).join('');
@@ -731,6 +892,7 @@ function renderAdminTeam(){
 function addLid(){team.push({i:'??',n:'Naam',r:'Rol',av:'av-b',type:'v',da:Array(5).fill(null).map(()=>({aan:1,loc:'kantoor',av:'ja'}))});renderAdminTeam();}
 function delLid(i){team.splice(i,1);renderAdminTeam();}
 
+/* ══ DEADLINES ADMIN ══ */
 function renderAdminDL(){
   let html='';
   MAANDEN.forEach((mn,mi)=>{
@@ -756,6 +918,7 @@ function renderAdminDL(){
 function addDL(mi){if(!deadlines[mi])deadlines[mi]=[];deadlines[mi].push({d:'',l:'Nieuwe deadline',urg:'binnenkort',bc:'#f59e0b',bw:50,done:false});renderAdminDL();}
 function delDL(mi,di){deadlines[mi].splice(di,1);renderAdminDL();}
 
+/* ══ VERGAD ADMIN ══ */
 function renderAdminVerg(){
   document.getElementById('admin-verg').innerHTML=DAGEN_SHORT.map((dag,di)=>{
     const vg=vergad[di]||[];
@@ -776,12 +939,13 @@ function renderAdminVerg(){
 function addVerg(di){if(!vergad[di])vergad[di]=[];vergad[di].push({t:'09:00',n:'Vergadering',s:'Omschrijving',c:'vp-b'});renderAdminVerg();}
 function delVerg(di,vi){vergad[di].splice(vi,1);renderAdminVerg();}
 
+/* ══ SAVE ══ */
 async function saveAll(){
   for(let mi=0;mi<12;mi++)sortDL(mi);
   const btn=document.getElementById('save-btn');
   btn.disabled=true;btn.textContent='Publiceren...';
   try{
-    await jbSave({team,taken,opmerkingen,deadlines,vergad});
+    await jbSave({team,taken,opmerkingen,planning,dagOverrides,deadlines,vergad});
     renderAdminDL();
     const msg=document.getElementById('save-msg');
     msg.textContent='✓ Gepubliceerd om '+new Date().toLocaleTimeString('nl',{hour:'2-digit',minute:'2-digit'});
@@ -789,7 +953,7 @@ async function saveAll(){
   }catch(e){
     const msg=document.getElementById('save-msg');
     msg.style.color='var(--danger)';
-    msg.textContent='⚠ Opslaan mislukt: '+e.message;
+    msg.textContent='⚠ Opslaan mislukt';
     setTimeout(()=>{msg.textContent='';msg.style.color='var(--green)';},5000);
   }
   btn.disabled=false;btn.textContent='Opslaan & publiceren';
@@ -797,11 +961,8 @@ async function saveAll(){
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 
-/* ══ BOOTSTRAP ══ */
-(function(){
-  // credentials zijn ingebakken, direct dashboard laden
-  initDashboard();
-})();
+/* ══ START ══ */
+initDashboard();
 </script>
 </body>
 </html>
