@@ -16,18 +16,43 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-#view-tv{display:block;}
-#view-admin{display:none;}
-body.admin #view-tv{display:none;}
-body.admin #view-admin{display:block;}
 
-/* ── SYNC INDICATOR ── */
-.sync-bar{display:flex;align-items:center;gap:6px;font-size:10px;font-family:'DM Mono',monospace;}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
-.sync-dot.ok{background:var(--green);}
-.sync-dot.busy{background:var(--warn);animation:pulse 1s infinite;}
-.sync-dot.err{background:var(--danger);}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+/* ── VIEWS ── */
+#view-tv{display:none;}
+#view-admin{display:none;}
+#view-setup{display:none;}
+#view-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;}
+#view-login{display:none;align-items:center;justify-content:center;min-height:100vh;}
+
+.spinner{width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.load-txt{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;}
+
+/* ── SETUP ── */
+.setup-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:32px;max-width:480px;width:90%;margin:0 auto;}
+.setup-card h1{font-size:18px;font-weight:500;margin-bottom:6px;}
+.setup-card p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;}
+.setup-steps{display:flex;flex-direction:column;gap:16px;}
+.step{background:var(--surface2);border-radius:var(--radius-sm);padding:16px;border:0.5px solid var(--border);}
+.step-num{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);margin-bottom:6px;}
+.step-title{font-size:13px;font-weight:500;margin-bottom:8px;}
+.step p{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6;}
+.step a{color:var(--accent);font-size:12px;}
+.fi{width:100%;background:var(--bg);border:0.5px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:9px 12px;outline:none;margin-bottom:8px;}
+.fi:focus{border-color:rgba(79,142,247,.5);}
+.fi.pw{font-family:'DM Sans',sans-serif;}
+.setup-btn{width:100%;padding:11px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;margin-top:4px;}
+.setup-btn:hover{opacity:.85;}
+.setup-note{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6;text-align:center;}
+.err-msg{font-size:12px;color:var(--danger);margin-top:6px;display:none;}
+
+/* ── LOGIN MODAL ── */
+.login-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:28px;max-width:360px;width:90%;}
+.login-card h2{font-size:16px;font-weight:500;margin-bottom:6px;}
+.login-card p{font-size:13px;color:var(--muted);margin-bottom:16px;}
+.login-row{display:flex;gap:8px;}
+.cancel-btn{padding:9px 16px;border-radius:8px;border:0.5px solid var(--border2);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+.ok-btn{flex:1;padding:9px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
 
 /* ── TV ── */
 .tv-wrap{padding:16px;display:grid;grid-template-rows:auto 1fr auto;gap:14px;min-height:100vh;}
@@ -42,13 +67,18 @@ header{display:flex;align-items:center;justify-content:space-between;background:
 .hdr-right{display:flex;align-items:center;gap:16px;}
 .clock{font-family:'DM Mono',monospace;font-size:28px;font-weight:500;letter-spacing:.04em;}
 .date-str{font-size:12px;color:var(--muted);margin-top:2px;text-align:right;}
+.sync-bar{display:flex;align-items:center;gap:5px;font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);}
+.sync-dot.ok{background:var(--green);}
+.sync-dot.busy{background:var(--warn);animation:pulse 1s infinite;}
+.sync-dot.err{background:var(--danger);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 .admin-toggle{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);padding:6px 12px;border-radius:6px;border:0.5px solid var(--border2);background:transparent;cursor:pointer;transition:all .15s;}
-.admin-toggle:hover{color:var(--text);}
+.admin-toggle:hover{color:var(--text);border-color:rgba(255,255,255,.25);}
 
 main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
 .card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:16px 18px;}
-.s2{grid-column:span 2;}
-.s3{grid-column:span 3;}
+.s2{grid-column:span 2;}.s3{grid-column:span 3;}
 .card-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
 
 .daynav{display:flex;gap:6px;margin-bottom:10px;}
@@ -80,7 +110,7 @@ main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
 .avail-beperkt{background:var(--warn);}
 
 .task-list{display:flex;flex-direction:column;gap:8px;}
-.task-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface2);cursor:pointer;}
+.task-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface2);}
 .task-item.done{opacity:.4;}
 .task-check{width:18px;height:18px;border-radius:4px;border:1.5px solid #374151;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;}
 .task-item.done .task-check{background:var(--green);border-color:var(--green);}
@@ -99,9 +129,6 @@ main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
 .dl-list{display:flex;flex-direction:column;gap:8px;}
 .dl-item{display:flex;align-items:center;gap:10px;transition:opacity .2s;}
 .dl-item.dl-done{opacity:.35;}
-.dl-check{width:16px;height:16px;border-radius:4px;border:1.5px solid #374151;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.dl-item.dl-done .dl-check{background:var(--green);border-color:var(--green);}
-.dl-item.dl-done .dl-check::after{content:'';display:block;width:3px;height:6px;border:1.5px solid #0f1117;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px);}
 .dl-date{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);min-width:44px;}
 .dl-bar{height:4px;border-radius:2px;flex:0 0 auto;}
 .dl-label{font-size:13px;}
@@ -127,27 +154,16 @@ main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
 .vp-c{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.25);color:#fdba74;}
 .vp-t{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.25);color:#6ee7b7;}
 .no-verg{font-size:13px;color:var(--muted);}
-
 footer{font-size:10px;color:var(--muted);text-align:center;font-family:'DM Mono',monospace;padding:4px 0;}
 .reset-btn{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);padding:4px 10px;border-radius:6px;border:0.5px solid var(--border);background:transparent;cursor:pointer;}
-.reset-btn:hover{color:var(--danger);}
-
-/* loading overlay */
-.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:100;}
-.loading-overlay.hidden{display:none;}
-.loading-spinner{width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.loading-text{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;}
 
 /* ── ADMIN ── */
 .admin-wrap{max-width:900px;margin:0 auto;padding:24px 20px 80px;}
 .admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
 .admin-title{font-size:20px;font-weight:500;}
 .back-btn{font-size:12px;font-family:'DM Mono',monospace;color:var(--muted);padding:7px 14px;border-radius:8px;border:0.5px solid var(--border2);background:transparent;cursor:pointer;}
-.back-btn:hover{color:var(--text);}
 .admin-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
-.tab-btn{padding:7px 16px;border-radius:8px;border:0.5px solid var(--border2);background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;transition:all .15s;}
-.tab-btn:hover{color:var(--text);}
+.tab-btn{padding:7px 16px;border-radius:8px;border:0.5px solid var(--border2);background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;}
 .tab-btn.active{background:rgba(79,142,247,.15);color:#93c5fd;border-color:rgba(79,142,247,.35);}
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
@@ -156,7 +172,7 @@ footer{font-size:10px;color:var(--muted);text-align:center;font-family:'DM Mono'
 .ai{background:var(--surface2);border:0.5px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:6px 10px;outline:none;}
 .ai:focus{border-color:rgba(79,142,247,.5);}
 .ai.sm{font-size:12px;color:var(--muted);}
-.add-btn{width:100%;margin-top:10px;padding:8px;border-radius:8px;border:0.5px dashed var(--border2);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;}
+.add-btn{width:100%;margin-top:10px;padding:8px;border-radius:8px;border:0.5px dashed var(--border2);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;}
 .add-btn:hover{background:var(--surface2);color:var(--text);}
 .del-btn{width:28px;height:28px;border-radius:6px;border:0.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .del-btn:hover{background:rgba(248,113,113,.15);color:#fca5a5;}
@@ -175,45 +191,73 @@ footer{font-size:10px;color:var(--muted);text-align:center;font-family:'DM Mono'
 .admin-verg-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--border);}
 .admin-verg-item:last-child{border-bottom:none;}
 .vi-time{width:70px;}.vi-name{flex:1;}.vi-sub{flex:1.5;}
+.opm-admin-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border);}
+.opm-admin-item:last-child{border-bottom:none;}
+textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
 .save-bar{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:14px 20px;margin-top:8px;position:sticky;bottom:16px;}
 .save-msg{font-size:12px;color:var(--green);font-family:'DM Mono',monospace;}
 .save-btn{padding:9px 22px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
-.save-btn:hover{opacity:.85;}
 .save-btn:disabled{opacity:.5;cursor:not-allowed;}
 .av-swatch{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:500;}
 .av-swatch.sel{border-color:white;}
-textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
-.opm-admin-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border);}
-.opm-admin-item:last-child{border-bottom:none;}
-
-/* setup screen */
-.setup-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:28px;max-width:520px;margin:60px auto;}
-.setup-card h1{font-size:18px;font-weight:500;margin-bottom:8px;}
-.setup-card p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;}
-.setup-card input{width:100%;background:var(--surface2);border:0.5px solid var(--border2);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:10px 14px;outline:none;margin-bottom:10px;}
-.setup-card input:focus{border-color:rgba(79,142,247,.5);}
-.setup-btn{width:100%;padding:11px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
-.setup-note{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6;}
+.logout-btn{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);padding:4px 10px;border-radius:6px;border:0.5px solid var(--border);background:transparent;cursor:pointer;margin-left:8px;}
 </style>
 </head>
 <body>
 
-<!-- Loading -->
-<div class="loading-overlay" id="loading">
-  <div class="loading-spinner"></div>
-  <div class="loading-text" id="loading-text">Dashboard laden...</div>
+<!-- LOADING -->
+<div id="view-loading">
+  <div class="spinner"></div>
+  <div class="load-txt" id="load-txt">Dashboard laden...</div>
 </div>
 
-<!-- Setup screen (eerste keer) -->
-<div id="view-setup" style="display:none;">
+<!-- SETUP (eerste keer) -->
+<div id="view-setup">
+  <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;">
   <div class="setup-card">
     <h1>Dashboard instellen</h1>
-    <p>Geef een unieke naam voor jullie dashboard. Iedereen die dezelfde naam gebruikt ziet dezelfde data.</p>
-    <input type="text" id="setup-key" placeholder="bijv. onlineboekhouders-bv" maxlength="40">
-    <button class="setup-btn" onclick="setupDashboard()">Dashboard starten</button>
-    <div class="setup-note">
-      Kies een naam die je gemakkelijk kan onthouden en delen met het team.<br>
-      Eens ingesteld wordt dit opgeslagen in de browser.
+    <p>Volg deze 3 stappen om het dashboard in te stellen. Dit doe je eenmalig — daarna werkt alles automatisch.</p>
+    <div class="setup-steps">
+
+      <div class="step">
+        <div class="step-num">STAP 1</div>
+        <div class="step-title">Maak een gratis JSONBin account</div>
+        <p>JSONBin is een gratis online database. Ga naar <a href="https://jsonbin.io" target="_blank">jsonbin.io</a> → klik op "Sign Up" → maak een gratis account aan.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">STAP 2</div>
+        <div class="step-title">Haal je API sleutel op</div>
+        <p>Na het inloggen op JSONBin: klik rechtsboven op je naam → "API Keys" → kopieer de sleutel die begint met <code style="background:var(--bg);padding:1px 5px;border-radius:4px;font-size:11px;">$2b$...</code></p>
+        <input class="fi" type="text" id="setup-apikey" placeholder="$2b$10$..." oninput="checkSetup()">
+      </div>
+
+      <div class="step">
+        <div class="step-num">STAP 3</div>
+        <div class="step-title">Kies een beheerwachtwoord</div>
+        <p>Alleen wie dit wachtwoord kent kan het dashboard aanpassen. Het team ziet alles maar kan niets wijzigen.</p>
+        <input class="fi pw" type="password" id="setup-pw" placeholder="Kies een wachtwoord" oninput="checkSetup()">
+        <input class="fi pw" type="password" id="setup-pw2" placeholder="Herhaal wachtwoord" oninput="checkSetup()">
+        <div class="err-msg" id="setup-err">Wachtwoorden komen niet overeen.</div>
+      </div>
+
+    </div>
+    <button class="setup-btn" id="setup-go" onclick="doSetup()" disabled>Dashboard aanmaken</button>
+    <div class="setup-note">Alles wordt veilig opgeslagen in je eigen JSONBin account.</div>
+  </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div id="view-login" style="display:none;align-items:center;justify-content:center;min-height:100vh;">
+  <div class="login-card">
+    <h2>Beheerpaneel</h2>
+    <p>Voer het beheerwachtwoord in om aanpassingen te maken.</p>
+    <input class="fi pw" type="password" id="login-pw" placeholder="Wachtwoord" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="err-msg" id="login-err">Wachtwoord incorrect.</div>
+    <div class="login-row" style="margin-top:12px;">
+      <button class="cancel-btn" onclick="cancelLogin()">Annuleren</button>
+      <button class="ok-btn" onclick="doLogin()">Inloggen</button>
     </div>
   </div>
 </div>
@@ -226,13 +270,13 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
     <div class="logo-mark">OB</div>
     <div>
       <span class="company-name">Online Boekhouders BV</span>
-      <span class="month-badge badge-red" id="mbadge"></span>
+      <span class="month-badge" id="mbadge"></span>
     </div>
   </div>
   <div class="hdr-right">
     <div class="sync-bar">
-      <div class="sync-dot" id="sync-dot"></div>
-      <span id="sync-label" style="color:var(--muted);">sync</span>
+      <div class="sync-dot ok" id="sync-dot"></div>
+      <span id="sync-lbl">live</span>
     </div>
     <div>
       <div class="clock" id="clk">--:--</div>
@@ -272,7 +316,9 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
 <div id="view-admin">
 <div class="admin-wrap">
   <div class="admin-header">
-    <div class="admin-title">⚙ Beheerpaneel</div>
+    <div class="admin-title">⚙ Beheerpaneel
+      <button class="logout-btn" onclick="logout()">uitloggen</button>
+    </div>
     <button class="back-btn" onclick="closeAdmin()">← Terug naar dashboard</button>
   </div>
   <div class="admin-tabs">
@@ -286,7 +332,7 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
     <div class="admin-section"><h2>Teamtaken deze week</h2><div id="admin-taken"></div><button class="add-btn" onclick="addTaak()">+ Taak toevoegen</button></div>
   </div>
   <div class="tab-panel" id="tab-opmerkingen">
-    <div class="admin-section"><h2>Mededelingen</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Ad hoc berichten zichtbaar op het dashboard.</p><div id="admin-opm"></div><button class="add-btn" onclick="addOpm()">+ Mededeling toevoegen</button></div>
+    <div class="admin-section"><h2>Mededelingen</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Zichtbaar op het dashboard voor het hele team.</p><div id="admin-opm"></div><button class="add-btn" onclick="addOpm()">+ Mededeling toevoegen</button></div>
   </div>
   <div class="tab-panel" id="tab-team">
     <div class="admin-section"><h2>Teamleden &amp; status per dag</h2><div id="admin-team"></div><button class="add-btn" onclick="addLid()">+ Teamlid toevoegen</button></div>
@@ -299,7 +345,7 @@ textarea.ai{resize:vertical;min-height:44px;line-height:1.5;}
   </div>
   <div class="save-bar">
     <span class="save-msg" id="save-msg"></span>
-    <button class="save-btn" id="save-btn" onclick="saveAll()">Opslaan &amp; synchroniseren</button>
+    <button class="save-btn" id="save-btn" onclick="saveAll()">Opslaan &amp; publiceren</button>
   </div>
 </div>
 </div>
@@ -329,9 +375,10 @@ const VERG_COLORS=[{v:'vp-b',l:'Blauw'},{v:'vp-t',l:'Groen'},{v:'vp-p',l:'Paars'
 const URG_OPTS=['urgent','binnenkort','deze maand'];
 const URG_COLORS={'urgent':'#f87171','binnenkort':'#f59e0b','deze maand':'#4f8ef7'};
 const URG_TAG={'urgent':'tg-r','binnenkort':'tg-a','deze maand':'tg-b'};
+const JSONBIN_URL='https://api.jsonbin.io/v3/b';
 
-/* ══ DEFAULTS ══ */
-const DEFAULT_DATA={
+/* ══ DEFAULT DATA ══ */
+const DEF={
   team:[
     {i:'TD',n:'Tom Dewaele',r:'Zaakvoerder',av:'av-b',type:'v',da:[{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
     {i:'MD',n:'Milan De Clercq',r:'Administratie',av:'av-t',type:'v',da:[{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
@@ -375,156 +422,163 @@ const DEFAULT_DATA={
 };
 
 /* ══ STATE ══ */
-let dashKey='';
+let cfg={apiKey:'',binId:'',pwHash:''};
 let team=[],taken=[],opmerkingen=[],deadlines=[],vergad=[];
 let activeDay=(new Date().getDay()+6)%7;
 if(activeDay>4)activeDay=0;
-let syncInterval=null;
-let lastHash='';
+let isAdmin=false;
+let refreshTimer=null;
+
+/* ══ HASH (simpel, niet cryptografisch maar voldoende) ══ */
+async function hashPw(pw){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pw));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+/* ══ SETUP ══ */
+function checkSetup(){
+  const k=document.getElementById('setup-apikey').value.trim();
+  const p=document.getElementById('setup-pw').value;
+  const p2=document.getElementById('setup-pw2').value;
+  const err=document.getElementById('setup-err');
+  const btn=document.getElementById('setup-go');
+  if(p&&p2&&p!==p2){err.style.display='block';}else{err.style.display='none';}
+  btn.disabled=!(k.length>10&&p.length>=4&&p===p2);
+}
+
+async function doSetup(){
+  const apiKey=document.getElementById('setup-apikey').value.trim();
+  const pw=document.getElementById('setup-pw').value;
+  showLoad('Eerste data aanmaken...');
+  hideAll();document.getElementById('view-loading').style.display='flex';
+  try{
+    const res=await fetch(JSONBIN_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Master-Key':apiKey,'X-Bin-Name':'ob-dashboard','X-Bin-Private':'false'},
+      body:JSON.stringify(DEF)
+    });
+    const data=await res.json();
+    if(!data.metadata||!data.metadata.id)throw new Error('Aanmaken mislukt');
+    const binId=data.metadata.id;
+    const pwHash=await hashPw(pw);
+    cfg={apiKey,binId,pwHash};
+    localStorage.setItem('ob-cfg',JSON.stringify(cfg));
+    await initDashboard();
+  }catch(e){
+    hideAll();document.getElementById('view-setup').style.display='block';
+    alert('Er ging iets mis: '+e.message+'\nControleer je API sleutel.');
+  }
+}
+
+/* ══ JSONBIN API ══ */
+async function jbLoad(){
+  setSyncStatus('busy');
+  const res=await fetch(JSONBIN_URL+'/'+cfg.binId+'/latest',{
+    headers:{'X-Master-Key':cfg.apiKey,'X-Bin-Meta':'false'}
+  });
+  if(!res.ok)throw new Error('Load failed '+res.status);
+  const data=await res.json();
+  setSyncStatus('ok');
+  return data;
+}
+
+async function jbSave(payload){
+  setSyncStatus('busy');
+  const res=await fetch(JSONBIN_URL+'/'+cfg.binId,{
+    method:'PUT',
+    headers:{'Content-Type':'application/json','X-Master-Key':cfg.apiKey},
+    body:JSON.stringify(payload)
+  });
+  if(!res.ok)throw new Error('Save failed '+res.status);
+  setSyncStatus('ok');
+}
 
 /* ══ SYNC STATUS ══ */
 function setSyncStatus(s){
   const dot=document.getElementById('sync-dot');
-  const lbl=document.getElementById('sync-label');
+  const lbl=document.getElementById('sync-lbl');
   if(!dot)return;
   dot.className='sync-dot';
-  if(s==='ok'){dot.classList.add('ok');lbl.textContent='gesynchroniseerd';}
-  else if(s==='busy'){dot.classList.add('busy');lbl.textContent='synchroniseren...';}
-  else if(s==='err'){dot.classList.add('err');lbl.textContent='sync mislukt';}
-  else{lbl.textContent='offline';}
-}
-
-/* ══ API ══ */
-async function apiLoad(){
-  setSyncStatus('busy');
-  try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:'Je bent een data-retrieval assistent. Geef ALLEEN een JSON-object terug, niks anders, geen uitleg, geen markdown.',
-        messages:[{role:'user',content:`Geef de opgeslagen dashboarddata terug voor sleutel "${dashKey}". Als er geen data is, geef dan: {"empty":true}`}]
-      })
-    });
-    const data=await resp.json();
-    const txt=data.content?.[0]?.text||'{}';
-    const clean=txt.replace(/```json|```/g,'').trim();
-    const parsed=JSON.parse(clean);
-    if(parsed.empty){
-      setSyncStatus('ok');
-      return null;
-    }
-    setSyncStatus('ok');
-    return parsed;
-  }catch(e){
-    setSyncStatus('err');
-    return null;
-  }
-}
-
-async function apiSave(payload){
-  setSyncStatus('busy');
-  try{
-    await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:100,
-        system:'Je bent een data-opslag assistent. Bevestig enkel met: {"saved":true}',
-        messages:[{role:'user',content:`Sla op voor sleutel "${dashKey}": ${JSON.stringify(payload)}`}]
-      })
-    });
-    setSyncStatus('ok');
-    return true;
-  }catch(e){
-    setSyncStatus('err');
-    return false;
-  }
-}
-
-/* ══ SETUP ══ */
-function setupDashboard(){
-  const k=document.getElementById('setup-key').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'');
-  if(!k||k.length<3){alert('Kies een naam van minstens 3 tekens (letters, cijfers, streepjes).');return;}
-  dashKey=k;
-  localStorage.setItem('ob-dashkey',k);
-  document.getElementById('view-setup').style.display='none';
-  initDashboard();
+  if(s==='ok'){dot.classList.add('ok');lbl.textContent='live';}
+  else if(s==='busy'){dot.classList.add('busy');lbl.textContent='sync...';}
+  else{dot.classList.add('err');lbl.textContent='offline';}
 }
 
 /* ══ INIT ══ */
-async function initDashboard(){
-  document.getElementById('loading').classList.remove('hidden');
-  document.getElementById('loading-text').textContent='Data laden van server...';
-
-  // Probeer van server te laden, fallback naar localStorage
-  let serverData=null;
-  try{ serverData=await apiLoad(); }catch(e){}
-
-  if(serverData&&serverData.team){
-    team=serverData.team;
-    taken=serverData.taken||[];
-    opmerkingen=serverData.opmerkingen||[];
-    deadlines=serverData.deadlines||DEFAULT_DATA.deadlines;
-    vergad=serverData.vergad||DEFAULT_DATA.vergad;
-    // sla ook lokaal op als fallback
-    localStorage.setItem('ob-data-'+dashKey,JSON.stringify(serverData));
-  } else {
-    // probeer lokale cache
-    const local=localStorage.getItem('ob-data-'+dashKey);
-    if(local){
-      try{
-        const d=JSON.parse(local);
-        team=d.team||DEFAULT_DATA.team;
-        taken=d.taken||DEFAULT_DATA.taken;
-        opmerkingen=d.opmerkingen||[];
-        deadlines=d.deadlines||DEFAULT_DATA.deadlines;
-        vergad=d.vergad||DEFAULT_DATA.vergad;
-      }catch(e){ loadDefaults(); }
-    } else {
-      loadDefaults();
-    }
-  }
-
-  document.getElementById('loading').classList.add('hidden');
-  document.getElementById('view-tv').style.display='block';
-
-  updateClock();renderNav();renderTeam();renderVergad();renderDeadlines();renderTaken();renderOpm();
-
-  // Auto-refresh elke 60 seconden
-  if(syncInterval)clearInterval(syncInterval);
-  syncInterval=setInterval(autoRefresh,60000);
+function showLoad(t){document.getElementById('load-txt').textContent=t||'Laden...';}
+function hideAll(){
+  ['view-loading','view-setup','view-tv','view-admin','view-login'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.style.display='none';
+  });
 }
 
-function loadDefaults(){
-  team=JSON.parse(JSON.stringify(DEFAULT_DATA.team));
-  taken=JSON.parse(JSON.stringify(DEFAULT_DATA.taken));
-  opmerkingen=[];
-  deadlines=JSON.parse(JSON.stringify(DEFAULT_DATA.deadlines));
-  vergad=JSON.parse(JSON.stringify(DEFAULT_DATA.vergad));
+async function initDashboard(){
+  showLoad('Dashboard laden...');
+  try{
+    const data=await jbLoad();
+    applyData(data);
+    hideAll();
+    document.getElementById('view-tv').style.display='block';
+    updateClock();renderNav();renderTeam();renderVergad();renderDeadlines();renderTaken();renderOpm();
+    if(refreshTimer)clearInterval(refreshTimer);
+    refreshTimer=setInterval(autoRefresh,60000);
+    setInterval(updateClock,30000);
+  }catch(e){
+    setSyncStatus('err');
+    // fallback lokaal
+    applyData(DEF);
+    hideAll();
+    document.getElementById('view-tv').style.display='block';
+    updateClock();renderNav();renderTeam();renderVergad();renderDeadlines();renderTaken();renderOpm();
+  }
+}
+
+function applyData(d){
+  team=d.team||DEF.team;
+  taken=d.taken||DEF.taken;
+  opmerkingen=d.opmerkingen||[];
+  deadlines=d.deadlines||DEF.deadlines;
+  vergad=d.vergad||DEF.vergad;
 }
 
 async function autoRefresh(){
-  // Haal nieuwe data op zonder loading screen
   try{
-    const serverData=await apiLoad();
-    if(serverData&&serverData.team){
-      const newHash=JSON.stringify(serverData);
-      if(newHash!==lastHash){
-        lastHash=newHash;
-        team=serverData.team;
-        taken=serverData.taken||[];
-        opmerkingen=serverData.opmerkingen||[];
-        deadlines=serverData.deadlines||DEFAULT_DATA.deadlines;
-        vergad=serverData.vergad||DEFAULT_DATA.vergad;
-        renderTeam();renderTaken();renderOpm();renderDeadlines();renderVergad();
-      }
-    }
-  }catch(e){}
+    const data=await jbLoad();
+    applyData(data);
+    renderTeam();renderTaken();renderOpm();renderDeadlines();renderVergad();
+  }catch(e){setSyncStatus('err');}
   updateClock();renderNav();
+}
+
+/* ══ LOGIN ══ */
+function openAdmin(){
+  if(isAdmin){showAdmin();return;}
+  hideAll();
+  document.getElementById('view-login').style.display='flex';
+  document.getElementById('login-pw').value='';
+  document.getElementById('login-err').style.display='none';
+  setTimeout(()=>document.getElementById('login-pw').focus(),100);
+}
+function cancelLogin(){
+  hideAll();document.getElementById('view-tv').style.display='block';
+}
+async function doLogin(){
+  const pw=document.getElementById('login-pw').value;
+  const hash=await hashPw(pw);
+  if(hash===cfg.pwHash){
+    isAdmin=true;
+    showAdmin();
+  }else{
+    document.getElementById('login-err').style.display='block';
+  }
+}
+function logout(){isAdmin=false;closeAdmin();}
+
+function showAdmin(){
+  hideAll();
+  document.getElementById('view-admin').style.display='block';
+  renderAdminAll();
 }
 
 /* ══ CLOCK ══ */
@@ -538,9 +592,8 @@ function updateClock(){
   el.textContent=MAANDEN[n.getMonth()].charAt(0).toUpperCase()+MAANDEN[n.getMonth()].slice(1)+' — '+mb.t;
   el.className='month-badge '+mb.c;
   document.getElementById('dl-maand-tv').textContent=MAANDEN[n.getMonth()];
-  document.getElementById('footer-ts').textContent='Vernieuwd om '+h+':'+m+' — '+dashKey;
+  document.getElementById('footer-ts').textContent='Vernieuwd om '+h+':'+m+' — Online Boekhouders BV';
 }
-setInterval(updateClock,30000);
 
 /* ══ TV RENDERS ══ */
 function renderNav(){
@@ -549,8 +602,8 @@ function renderNav(){
   ).join('');
 }
 function renderTeam(){
-  const aanCount=team.filter(m=>m.da[activeDay]&&m.da[activeDay].aan).length;
-  document.getElementById('aanwezig-count').textContent=aanCount+'/'+team.length;
+  const ac=team.filter(m=>m.da[activeDay]&&m.da[activeDay].aan).length;
+  document.getElementById('aanwezig-count').textContent=ac+'/'+team.length;
   document.getElementById('teamgrid').innerHTML=team.map(m=>{
     const dag=m.da[activeDay]||{aan:0,loc:'kantoor',av:'ja'};
     const aan=dag.aan;
@@ -573,29 +626,22 @@ function renderVergad(){
   if(!vg.length){el.innerHTML=`<span class="no-verg">Geen vaste vergaderingen vandaag</span>`;return;}
   el.innerHTML=vg.map(v=>`<div class="verg-pill ${v.c}"><div class="verg-time">${v.t}</div><div class="verg-name">${v.n}</div><div class="verg-sub">${v.s}</div></div>`).join('');
 }
-function parseDatumSort(d){const p=(d||'').split('/');if(p.length<2)return 9999;return parseInt(p[1]||0)*100+parseInt(p[0]||0);}
-function sortDL(mi){if(deadlines[mi])deadlines[mi].sort((a,b)=>parseDatumSort(a.d)-parseDatumSort(b.d));}
+function parseDatSort(d){const p=(d||'').split('/');if(p.length<2)return 9999;return parseInt(p[1]||0)*100+parseInt(p[0]||0);}
+function sortDL(mi){if(deadlines[mi])deadlines[mi].sort((a,b)=>parseDatSort(a.d)-parseDatSort(b.d));}
 function renderDeadlines(){
   const mi=new Date().getMonth();
-  const dl=(deadlines[mi]||[]).slice().sort((a,b)=>parseDatumSort(a.d)-parseDatumSort(b.d));
+  const dl=(deadlines[mi]||[]).slice().sort((a,b)=>parseDatSort(a.d)-parseDatSort(b.d));
   document.getElementById('dl-list').innerHTML=dl.length
     ?dl.map((d,i)=>`<div class="dl-item${d.done?' dl-done':''}">
-        <div class="dl-check" onclick="toggleDL(${i})"></div>
         <span class="dl-date">${d.d}</span>
         <div class="dl-bar" style="background:${d.bc};width:${Math.min(d.bw,80)}px;"></div>
         <span class="dl-label">${esc(d.l)}<span class="dl-tag ${URG_TAG[d.urg]||'tg-b'}">${d.urg}</span></span>
       </div>`).join('')
     :`<span style="font-size:13px;color:var(--muted);">Geen deadlines deze maand</span>`;
 }
-function toggleDL(si){
-  const mi=new Date().getMonth();
-  const sorted=(deadlines[mi]||[]).slice().sort((a,b)=>parseDatumSort(a.d)-parseDatumSort(b.d));
-  const item=sorted[si];const ri=deadlines[mi].indexOf(item);
-  if(ri>=0){deadlines[mi][ri].done=!deadlines[mi][ri].done;persistLocal();renderDeadlines();}
-}
 function renderTaken(){
   document.getElementById('takenlijst').innerHTML=taken.map((tk,i)=>
-    `<div class="task-item${tk.done?' done':''}" onclick="toggleDone(${i})">
+    `<div class="task-item${tk.done?' done':''}">
       <div class="task-check"></div>
       <div class="prio-num ${PNCS[i]||'pn4'}">${i+1}</div>
       <div class="task-body"><div class="task-text">${esc(tk.t)}</div><div class="task-who">${esc(tk.w)}</div></div>
@@ -608,16 +654,12 @@ function renderOpm(){
   el.innerHTML=opmerkingen.map(o=>`<div class="opm-item"><div class="opm-dot"></div><span class="opm-text">${esc(o.t)}</span></div>`).join('');
 }
 function setDay(i){activeDay=i;renderNav();renderTeam();renderVergad();}
-function toggleDone(i){taken[i].done=!taken[i].done;persistLocal();renderTaken();}
-function resetTaken(){taken.forEach(t=>t.done=false);persistLocal();renderTaken();}
-function persistLocal(){localStorage.setItem('ob-data-'+dashKey,JSON.stringify({team,taken,opmerkingen,deadlines,vergad}));}
+function resetTaken(){if(!isAdmin)return;taken.forEach(t=>t.done=false);renderTaken();}
 
-/* ══ ADMIN ══ */
-let activeTab='taken';
-function openAdmin(){document.body.classList.add('admin');renderAdminAll();}
-function closeAdmin(){document.body.classList.remove('admin');renderTaken();renderTeam();renderNav();renderVergad();renderDeadlines();renderOpm();}
+/* ══ ADMIN RENDERS ══ */
+function closeAdmin(){hideAll();document.getElementById('view-tv').style.display='block';renderAll();}
+function renderAll(){renderTaken();renderTeam();renderNav();renderVergad();renderDeadlines();renderOpm();}
 function switchTab(tab){
-  activeTab=tab;
   document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['taken','opmerkingen','team','deadlines','vergad'][i]===tab));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
@@ -651,7 +693,7 @@ function delOpm(i){opmerkingen.splice(i,1);renderAdminOpm();}
 
 function renderAdminTeam(){
   document.getElementById('admin-team').innerHTML=team.map((m,mi)=>{
-    const avSwatches=AV_OPTS.map(a=>`<div class="av-swatch ${a.cls}${m.av===a.cls?' sel':''}" style="background:${a.bg};color:${a.fg};" onclick="team[${mi}].av='${a.cls}';renderAdminTeam();">${m.i}</div>`).join('');
+    const avS=AV_OPTS.map(a=>`<div class="av-swatch ${a.cls}${m.av===a.cls?' sel':''}" style="background:${a.bg};color:${a.fg};" onclick="team[${mi}].av='${a.cls}';renderAdminTeam();">${m.i}</div>`).join('');
     const dagRows=DAGEN_SHORT.map((dag,di)=>{
       const d=m.da[di]||{aan:0,loc:'kantoor',av:'ja'};
       return`<div class="dag-status-row">
@@ -670,11 +712,11 @@ function renderAdminTeam(){
     }).join('');
     return`<div style="background:var(--surface2);border-radius:var(--radius-sm);padding:14px;margin-bottom:10px;border:0.5px solid var(--border);">
       <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
-        <div style="display:flex;gap:4px;flex-shrink:0;">${avSwatches}</div>
+        <div style="display:flex;gap:4px;flex-shrink:0;">${avS}</div>
         <div style="display:flex;gap:8px;flex:1;flex-wrap:wrap;">
           <input class="ai" style="width:55px;text-align:center;" value="${esc(m.i)}" maxlength="3" oninput="team[${mi}].i=this.value">
-          <input class="ai" style="flex:1;min-width:120px;" value="${esc(m.n)}" placeholder="Naam" oninput="team[${mi}].n=this.value">
-          <input class="ai sm" style="flex:1;min-width:100px;" value="${esc(m.r)}" placeholder="Rol" oninput="team[${mi}].r=this.value">
+          <input class="ai" style="flex:1;min-width:120px;" value="${esc(m.n)}" oninput="team[${mi}].n=this.value">
+          <input class="ai sm" style="flex:1;min-width:100px;" value="${esc(m.r)}" oninput="team[${mi}].r=this.value">
           <select class="asel" style="width:100px;" onchange="team[${mi}].type=this.value">
             <option value="v"${m.type==='v'?' selected':''}>Vast</option>
             <option value="f"${m.type==='f'?' selected':''}>Freelance</option>
@@ -696,12 +738,12 @@ function renderAdminDL(){
     (deadlines[mi]||[]).forEach((dl,di)=>{
       html+=`<div class="dl-admin-item">
         <input class="ai" style="width:90px;" value="${esc(dl.d)}" placeholder="20/04" oninput="deadlines[${mi}][${di}].d=this.value">
-        <input class="ai" style="flex:1;" value="${esc(dl.l)}" placeholder="Omschrijving" oninput="deadlines[${mi}][${di}].l=this.value">
+        <input class="ai" style="flex:1;" value="${esc(dl.l)}" oninput="deadlines[${mi}][${di}].l=this.value">
         <select class="asel" style="width:120px;" onchange="deadlines[${mi}][${di}].urg=this.value;deadlines[${mi}][${di}].bc=URG_COLORS[this.value];">
           ${URG_OPTS.map(u=>`<option value="${u}"${dl.urg===u?' selected':''}>${u}</option>`).join('')}
         </select>
         <div style="display:flex;align-items:center;gap:5px;">
-          <input type="checkbox" style="accent-color:var(--green);width:14px;height:14px;cursor:pointer;" ${dl.done?'checked':''} onchange="deadlines[${mi}][${di}].done=this.checked;" title="Afgewerkt">
+          <input type="checkbox" style="accent-color:var(--green);width:14px;height:14px;cursor:pointer;" ${dl.done?'checked':''} onchange="deadlines[${mi}][${di}].done=this.checked;">
           <span style="font-size:10px;color:var(--muted);">klaar</span>
         </div>
         <button class="del-btn" onclick="delDL(${mi},${di})">×</button>
@@ -719,9 +761,9 @@ function renderAdminVerg(){
     const vg=vergad[di]||[];
     return`<div class="admin-verg-day"><h3>${dag}</h3>
       ${vg.map((v,vi)=>`<div class="admin-verg-item">
-        <input class="ai vi-time" value="${esc(v.t)}" placeholder="09:00" oninput="vergad[${di}][${vi}].t=this.value">
-        <input class="ai vi-name" value="${esc(v.n)}" placeholder="Naam" oninput="vergad[${di}][${vi}].n=this.value">
-        <input class="ai vi-sub" value="${esc(v.s)}" placeholder="Ondertitel" oninput="vergad[${di}][${vi}].s=this.value">
+        <input class="ai vi-time" value="${esc(v.t)}" oninput="vergad[${di}][${vi}].t=this.value">
+        <input class="ai vi-name" value="${esc(v.n)}" oninput="vergad[${di}][${vi}].n=this.value">
+        <input class="ai vi-sub" value="${esc(v.s)}" oninput="vergad[${di}][${vi}].s=this.value">
         <select class="asel" style="width:90px;" onchange="vergad[${di}][${vi}].c=this.value">
           ${VERG_COLORS.map(c=>`<option value="${c.v}"${v.c===c.v?' selected':''}>${c.l}</option>`).join('')}
         </select>
@@ -736,32 +778,39 @@ function delVerg(di,vi){vergad[di].splice(vi,1);renderAdminVerg();}
 
 async function saveAll(){
   for(let mi=0;mi<12;mi++)sortDL(mi);
-  const payload={team,taken,opmerkingen,deadlines,vergad};
   const btn=document.getElementById('save-btn');
-  btn.disabled=true;btn.textContent='Opslaan...';
-  const ok=await apiSave(payload);
-  persistLocal();
-  renderAdminDL();
-  btn.disabled=false;btn.textContent='Opslaan & synchroniseren';
-  const msg=document.getElementById('save-msg');
-  msg.textContent=ok?'✓ Gesynchroniseerd om '+new Date().toLocaleTimeString('nl',{hour:'2-digit',minute:'2-digit'}):'⚠ Lokaal opgeslagen (server niet bereikbaar)';
-  setTimeout(()=>msg.textContent='',4000);
+  btn.disabled=true;btn.textContent='Publiceren...';
+  try{
+    await jbSave({team,taken,opmerkingen,deadlines,vergad});
+    renderAdminDL();
+    const msg=document.getElementById('save-msg');
+    msg.textContent='✓ Gepubliceerd om '+new Date().toLocaleTimeString('nl',{hour:'2-digit',minute:'2-digit'});
+    setTimeout(()=>msg.textContent='',4000);
+  }catch(e){
+    const msg=document.getElementById('save-msg');
+    msg.style.color='var(--danger)';
+    msg.textContent='⚠ Opslaan mislukt: '+e.message;
+    setTimeout(()=>{msg.textContent='';msg.style.color='var(--green)';},5000);
+  }
+  btn.disabled=false;btn.textContent='Opslaan & publiceren';
 }
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 
 /* ══ BOOTSTRAP ══ */
 (function(){
-  const saved=localStorage.getItem('ob-dashkey');
+  const saved=localStorage.getItem('ob-cfg');
   if(saved){
-    dashKey=saved;
-    document.getElementById('view-setup').style.display='none';
-    initDashboard();
-  } else {
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('view-tv').style.display='none';
-    document.getElementById('view-setup').style.display='block';
+    try{
+      cfg=JSON.parse(saved);
+      if(cfg.apiKey&&cfg.binId){
+        initDashboard();
+        return;
+      }
+    }catch(e){}
   }
+  hideAll();
+  document.getElementById('view-setup').style.display='block';
 })();
 </script>
 </body>
