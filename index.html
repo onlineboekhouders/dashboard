@@ -68,7 +68,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 /* TV GRID: 4 kolommen × 2 rijen */
 .tv-grid{
   display:grid;
-  grid-template-columns:1.15fr 1.3fr 0.9fr 0.85fr;
+  grid-template-columns:1.4fr 1.3fr 1fr 0.85fr;
   grid-template-rows:auto 1fr 1fr;
   gap:8px;
   flex:1;
@@ -103,10 +103,10 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 function renderVanTom(){
   const el=document.getElementById('vantom-list');
   if(!el)return;
-  if(!vantom.length){el.innerHTML=`<span class="msg-leeg">Geen berichten</span>`;return;}
-  el.innerHTML=vantom.map(m=>`<div class="msg-item">
-    <div class="msg-dot-tom"></div>
-    <span class="msg-txt">${esc(m.t)}</span>
+  if(!vantom.length){el.innerHTML=`<span class="msg-leeg">Geen berichten van Tom</span>`;return;}
+  el.innerHTML=vantom.map(m=>`<div style="display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;background:var(--surface2);border:0.5px solid var(--border);">
+    <div class="msg-dot-tom" style="flex-shrink:0;"></div>
+    <span style="font-size:11px;color:var(--text);">${esc(m.t)}</span>
   </div>`).join('');
 }
 
@@ -334,8 +334,8 @@ textarea.ai{resize:vertical;min-height:40px;line-height:1.5;}
 
   <div class="tv-grid">
 
-    <!-- KOL 1: TEAM (span 3 rijen) -->
-    <div class="card" style="grid-row:span 3;">
+    <!-- KOL 1 RIJ 1+2: TEAM -->
+    <div class="card" style="grid-row:span 2;">
       <div class="clbl">
         Team
         <span id="ac" style="font-size:9px;font-family:'DM Mono',monospace;color:var(--green);"></span>
@@ -345,25 +345,22 @@ textarea.ai{resize:vertical;min-height:40px;line-height:1.5;}
       <div class="cscroll"><div class="team-grid-2col" id="teamgrid"></div></div>
     </div>
 
-    <!-- RIJ 1 KOL 2: VAN TOM -->
-    <div class="card" style="grid-column:span 2;padding:10px 13px;">
-      <div class="clbl" style="margin-bottom:6px;">
-        Van Tom
-        <span id="vantom-ts" style="font-size:8px;color:var(--muted);"></span>
-      </div>
-      <div id="vantom-list" style="display:flex;flex-direction:column;gap:5px;"></div>
+    <!-- RIJ 1: VAN TOM (span 3 kolommen, compact) -->
+    <div class="card" style="grid-column:span 3;padding:8px 13px;flex-direction:row;align-items:center;gap:12px;flex-wrap:wrap;">
+      <span style="font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;flex-shrink:0;">Van Tom</span>
+      <div id="vantom-list" style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"></div>
     </div>
 
-    <!-- KOL 2 RIJ 2: PLANNING -->
-    <div class="card">
+    <!-- KOL 2 RIJ 2+3: PLANNING (span 2 rijen) -->
+    <div class="card" style="grid-row:span 2;">
       <div class="clbl">Planning <span id="plandaglbl" style="color:var(--accent);font-size:9px;"></span></div>
       <div class="cscroll" id="planningel"></div>
     </div>
 
-    <!-- KOL 3 RIJ 1: DEADLINES -->
+    <!-- KOL 3 RIJ 2: TEAMTAKEN -->
     <div class="card">
-      <div class="clbl">Deadlines <span id="dlmaand"></span></div>
-      <div class="cscroll" id="dlel"></div>
+      <div class="clbl">Teamtaken <button class="rstbtn" onclick="resetTaken()">↺ reset</button></div>
+      <div class="cscroll" id="takenel"></div>
     </div>
 
     <!-- KOL 4 RIJ 1+3: PROJECTEN (span 3 rijen) -->
@@ -372,16 +369,16 @@ textarea.ai{resize:vertical;min-height:40px;line-height:1.5;}
       <div class="cscroll" id="pjel"></div>
     </div>
 
-    <!-- KOL 2 RIJ 2: TAKEN -->
-    <div class="card">
-      <div class="clbl">Teamtaken <button class="rstbtn" onclick="resetTaken()">↺ reset</button></div>
-      <div class="cscroll" id="takenel"></div>
-    </div>
-
-    <!-- KOL 3 RIJ 2: VERGADERINGEN -->
+    <!-- KOL 1 RIJ 3: VERGADERINGEN -->
     <div class="card">
       <div class="clbl">Vergaderingen vandaag</div>
       <div class="cscroll" id="vergel"></div>
+    </div>
+
+    <!-- KOL 3 RIJ 3: DEADLINES -->
+    <div class="card">
+      <div class="clbl">Deadlines <span id="dlmaand"></span></div>
+      <div class="cscroll" id="dlel"></div>
     </div>
 
   </div>
