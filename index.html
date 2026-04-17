@@ -69,7 +69,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .tv-grid{
   display:grid;
   grid-template-columns:1.15fr 1.3fr 0.9fr 0.85fr;
-  grid-template-rows:1fr 1fr;
+  grid-template-rows:auto 1fr 1fr;
   gap:8px;
   flex:1;
   min-height:0;
@@ -96,6 +96,19 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .cscroll{flex:1;overflow-y:auto;min-height:0;}
 .cscroll::-webkit-scrollbar{width:2px;}
 .cscroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+
+
+/* VAN TOM & MEDEDELINGEN */
+function renderVanTom(){
+  const el=document.getElementById('vantom-list');
+  if(!el)return;
+  if(!vantom.length){el.innerHTML=`<span class="msg-leeg">Geen berichten</span>`;return;}
+  el.innerHTML=vantom.map(m=>`<div class="msg-item">
+    <div class="msg-dot-tom"></div>
+    <span class="msg-txt">${esc(m.t)}</span>
+  </div>`).join('');
+}
 
 /* WEEK NAV */
 .wnav-lbl{font-size:8px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
@@ -271,6 +284,13 @@ textarea.ai{resize:vertical;min-height:40px;line-height:1.5;}
 .todaybadge{display:inline-block;font-size:8px;padding:1px 5px;border-radius:4px;background:rgba(52,211,153,.15);color:var(--green);margin-left:5px;}
 .pjadm-row{display:grid;grid-template-columns:1fr 130px 1fr auto;gap:8px;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border);}
 .pjadm-row:last-child{border-bottom:none;}
+
+/* COMMUNICATIE BLOKKEN */
+.msg-item{display:flex;align-items:flex-start;gap:7px;padding:5px 8px;border-radius:6px;background:var(--surface2);border:0.5px solid var(--border);}
+.msg-dot-tom{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px;}
+.msg-dot-med{width:6px;height:6px;border-radius:50%;background:var(--warn);flex-shrink:0;margin-top:4px;}
+.msg-txt{font-size:11px;line-height:1.5;color:var(--text);}
+.msg-leeg{font-size:11px;color:var(--muted);font-style:italic;}
 </style>
 </head>
 <body>
@@ -314,8 +334,8 @@ textarea.ai{resize:vertical;min-height:40px;line-height:1.5;}
 
   <div class="tv-grid">
 
-    <!-- KOL 1: TEAM (span 2 rijen) -->
-    <div class="card" style="grid-row:span 2;">
+    <!-- KOL 1: TEAM (span 3 rijen) -->
+    <div class="card" style="grid-row:span 3;">
       <div class="clbl">
         Team
         <span id="ac" style="font-size:9px;font-family:'DM Mono',monospace;color:var(--green);"></span>
@@ -325,7 +345,16 @@ textarea.ai{resize:vertical;min-height:40px;line-height:1.5;}
       <div class="cscroll"><div class="team-grid-2col" id="teamgrid"></div></div>
     </div>
 
-    <!-- KOL 2 RIJ 1: PLANNING -->
+    <!-- RIJ 1 KOL 2: VAN TOM -->
+    <div class="card" style="grid-column:span 2;padding:10px 13px;">
+      <div class="clbl" style="margin-bottom:6px;">
+        Van Tom
+        <span id="vantom-ts" style="font-size:8px;color:var(--muted);"></span>
+      </div>
+      <div id="vantom-list" style="display:flex;flex-direction:column;gap:5px;"></div>
+    </div>
+
+    <!-- KOL 2 RIJ 2: PLANNING -->
     <div class="card">
       <div class="clbl">Planning <span id="plandaglbl" style="color:var(--accent);font-size:9px;"></span></div>
       <div class="cscroll" id="planningel"></div>
@@ -337,8 +366,8 @@ textarea.ai{resize:vertical;min-height:40px;line-height:1.5;}
       <div class="cscroll" id="dlel"></div>
     </div>
 
-    <!-- KOL 4 RIJ 1+2: PROJECTEN (span 2 rijen) -->
-    <div class="card" style="grid-row:span 2;">
+    <!-- KOL 4 RIJ 1+3: PROJECTEN (span 3 rijen) -->
+    <div class="card" style="grid-row:span 3;">
       <div class="clbl">Lopende projecten</div>
       <div class="cscroll" id="pjel"></div>
     </div>
@@ -368,6 +397,7 @@ textarea.ai{resize:vertical;min-height:40px;line-height:1.5;}
   </div>
   <div class="tabs">
     <button class="tbtn on" onclick="switchTab('planning')">Planning 2 weken</button>
+    <button class="tbtn" onclick="switchTab('vantom')">Van Tom</button>
     <button class="tbtn" onclick="switchTab('taken')">Teamtaken</button>
     <button class="tbtn" onclick="switchTab('projecten')">Projecten</button>
     <button class="tbtn" onclick="switchTab('team')">Teamleden</button>
@@ -385,6 +415,15 @@ textarea.ai{resize:vertical;min-height:40px;line-height:1.5;}
         <button class="pwbtn" onclick="setPW(1)" id="pwb1">Volgende week</button>
       </div>
       <div id="aplanningel"></div>
+    </div>
+  </div>
+
+  <div class="tpanel" id="tp-vantom">
+    <div class="asec">
+      <h2>Van Tom</h2>
+      <p>Korte directieven en prioriteiten voor het team. Max. 3 berichten, kort en krachtig.</p>
+      <div id="avantom"></div>
+      <button class="addbtn" onclick="addVanTom()">+ Bericht toevoegen</button>
     </div>
   </div>
 
@@ -524,7 +563,7 @@ const DEFT={
 };
 
 /* STATE */
-let team=[],taken=[],projecten=[],planning={},dagOverrides={},deadlines=[],vergad=[],maandberichten={};
+let team=[],taken=[],projecten=[],planning={},dagOverrides={},deadlines=[],vergad=[],maandberichten={},vantom=[],mededelingen=[];
 let activeDate=new Date();
 let isAdmin=false;
 let planWeekOffset=0;
@@ -583,6 +622,8 @@ function applyData(d){
   deadlines=d.deadlines||DEFT.deadlines;
   vergad=d.vergad||DEFT.vergad;
   maandberichten=d.maandberichten||{};
+  vantom=d.vantom||[];
+  mededelingen=d.mededelingen||[];
 }
 function hideAll(){
   ['view-loading','view-login','view-tv','view-admin'].forEach(id=>{
@@ -606,7 +647,7 @@ async function autoRefresh(){
 }
 function renderAll(){
   renderWeekNav();renderTeam();renderPlanning();renderDeadlines();
-  renderTaken();renderVergad();renderProjecten();
+  renderTaken();renderVergad();renderProjecten();renderVanTom();
 }
 
 /* CLOCK */
@@ -623,6 +664,21 @@ function updateClock(){
   el.className='mbadge '+mb.c;
   document.getElementById('dlmaand').textContent=MN[n.getMonth()];
   document.getElementById('footts').textContent='Vernieuwd om '+h+':'+m+' — Online Boekhouders BV';
+}
+
+
+/* COMMUNICATIE BLOKKEN */
+
+
+/* VAN TOM & MEDEDELINGEN */
+function renderVanTom(){
+  const el=document.getElementById('vantom-list');
+  if(!el)return;
+  if(!vantom.length){el.innerHTML=`<span class="msg-leeg">Geen berichten</span>`;return;}
+  el.innerHTML=vantom.map(m=>`<div class="msg-item">
+    <div class="msg-dot-tom"></div>
+    <span class="msg-txt">${esc(m.t)}</span>
+  </div>`).join('');
 }
 
 /* WEEK NAV */
@@ -801,12 +857,12 @@ function closeAdmin(){hideAll();document.getElementById('view-tv').style.display
 
 /* TABS */
 function switchTab(tab){
-  const tabs=['planning','taken','projecten','team','maand','deadlines','vergad'];
+  const tabs=['planning','vantom','taken','projecten','team','maand','deadlines','vergad'];
   document.querySelectorAll('.tbtn').forEach((b,i)=>b.classList.toggle('on',tabs[i]===tab));
   document.querySelectorAll('.tpanel').forEach(p=>p.classList.remove('on'));
   document.getElementById('tp-'+tab).classList.add('on');
 }
-function renderAdminAll(){rAPlanning();rATaken();rAProjecten();rATeam();rAMaand();rADL();rAVerg();}
+function renderAdminAll(){rAPlanning();rAVanTom();rATaken();rAProjecten();rATeam();rAMaand();rADL();rAVerg();}
 
 /* PLANNING ADMIN */
 function setPW(w){
@@ -889,6 +945,22 @@ function rAMaand(){
       <span style="font-size:9px;color:var(--muted);min-width:80px;">standaard: ${MBADGE[mi].t}</span>
     </div>`
   ).join('');
+}
+
+
+/* VAN TOM ADMIN */
+function rAVanTom(){
+  document.getElementById('avantom').innerHTML=vantom.map((m,i)=>`
+    <div class="arow">
+      <div class="msg-dot-tom" style="flex-shrink:0;margin-top:8px;"></div>
+      <input class="ai" style="flex:1;" value="${esc(m.t)}" placeholder="Kort bericht voor het team..." oninput="vantom[${i}].t=this.value">
+      <button class="delbtn" onclick="vantom.splice(${i},1);rAVanTom()">×</button>
+    </div>`
+  ).join('');
+}
+function addVanTom(){
+  if(vantom.length>=3){alert('Maximum 3 berichten voor een helder overzicht.');return;}
+  vantom.push({t:''});rAVanTom();
 }
 
 /* TAKEN ADMIN */
@@ -1007,7 +1079,7 @@ async function saveAll(){
   const btn=document.getElementById('sbtn');
   btn.disabled=true;btn.textContent='Publiceren...';
   try{
-    await jbSave({team,taken,projecten,planning,dagOverrides,deadlines,vergad,maandberichten});
+    await jbSave({team,taken,projecten,planning,dagOverrides,deadlines,vergad,maandberichten,vantom,mededelingen});
     rADL();
     const msg=document.getElementById('smsg');
     msg.textContent='✓ Gepubliceerd om '+new Date().toLocaleTimeString('nl',{hour:'2-digit',minute:'2-digit'});
