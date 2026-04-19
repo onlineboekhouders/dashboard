@@ -18,7 +18,6 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
-/* LOGIN */
 #view-login{display:flex;align-items:center;justify-content:center;min-height:100vh;}
 .login-card{background:var(--surface);border-radius:16px;border:0.5px solid var(--border2);padding:40px;max-width:400px;width:90%;text-align:center;}
 .login-logo{width:52px;height:52px;border-radius:12px;background:#e84b1f;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:#fff;margin:0 auto 16px;}
@@ -27,16 +26,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border-radius:10px;border:0.5px solid var(--border2);background:var(--surface);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;}
 .google-btn:hover{background:var(--surface2);}
 
-/* MAIN */
 #view-main{display:none;flex-direction:column;min-height:100vh;padding:14px;gap:12px;}
 
-/* HEADER */
-.hdr{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
+.hdr{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
 .hdr-l{display:flex;align-items:center;gap:10px;}
-.logo-mark{width:32px;height:32px;border-radius:8px;background:#e84b1f;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:#fff;}
+.logo-mark{width:32px;height:32px;border-radius:8px;background:#e84b1f;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:#fff;flex-shrink:0;}
 .hdr-title{font-size:15px;font-weight:500;}
 .hdr-sub{font-size:11px;color:var(--muted);margin-top:1px;}
-.hdr-r{display:flex;align-items:center;gap:10px;}
+.hdr-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .sync-bar{display:flex;align-items:center;gap:5px;font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);}
 .sdot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
 .sdot.ok{background:var(--green);}
@@ -44,16 +41,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 .hbtn{font-size:11px;font-family:'DM Sans',sans-serif;padding:6px 12px;border-radius:7px;border:0.5px solid var(--border2);background:transparent;cursor:pointer;color:var(--text);}
 .hbtn:hover{background:var(--surface2);}
+.hbtn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
 .hbtn.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
 .hbtn.primary:hover{opacity:.88;}
 
-/* STATS */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
 .stat{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;}
 .stat-lbl{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
 .stat-val{font-size:22px;font-weight:500;}
 
-/* PERSON TABS */
+/* VIEW SWITCHER */
+.view-bar{display:flex;gap:6px;align-items:center;}
+.vbtn{font-size:11px;padding:6px 14px;border-radius:7px;border:0.5px solid var(--border);background:var(--surface);cursor:pointer;color:var(--muted);}
+.vbtn.on{background:var(--text);color:#fff;border-color:var(--text);}
+
+/* TABS */
 .tabs{display:flex;gap:6px;flex-wrap:wrap;}
 .tab{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface);font-size:12px;cursor:pointer;transition:all .15s;color:var(--muted);}
 .tab:hover{border-color:var(--border2);color:var(--text);}
@@ -62,33 +64,40 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .tab .cnt{font-size:10px;padding:1px 6px;border-radius:10px;background:rgba(255,255,255,.25);}
 .tab:not(.active) .cnt{background:var(--surface2);color:var(--muted);}
 
-/* PERSON VIEW */
-.person-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:16px 18px;flex:1;}
-.person-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+/* PERSON CARD */
+.person-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:16px 18px;}
+.person-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
 .person-info{display:flex;align-items:center;gap:10px;}
-.pav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;}
+.pav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0;}
 .pname{font-size:16px;font-weight:500;}
 .prole{font-size:12px;color:var(--muted);}
-.pbadges{display:flex;gap:6px;align-items:center;}
+.pbadges{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
 .pbadge{font-size:11px;padding:3px 10px;border-radius:20px;}
 .pb-open{background:#FAEEDA;color:#854F0B;}
 .pb-done{background:#EAF3DE;color:#3B6D11;}
-.pb-list{font-size:10px;padding:2px 8px;border-radius:6px;background:var(--surface2);color:var(--muted);font-family:'DM Mono',monospace;}
 
-/* FILTERS */
-.filters{display:flex;gap:6px;margin-bottom:14px;}
+.filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
 .filter{font-size:11px;padding:4px 10px;border-radius:6px;border:0.5px solid var(--border);background:transparent;cursor:pointer;color:var(--muted);}
 .filter.on{background:var(--surface2);color:var(--text);border-color:var(--border2);}
 
-/* TASK LIST */
 .section-lbl{font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:12px 0 7px;}
-.task-row{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface2);margin-bottom:5px;transition:opacity .2s;}
-.task-row.done{opacity:.38;}
-.task-chk{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+
+/* TASK ROW */
+.task-row{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface2);margin-bottom:5px;transition:opacity .2s;}
+.task-row.done{opacity:.35;}
+.task-chk{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;margin-top:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
 .task-chk:hover{border-color:var(--green);}
 .task-row.done .task-chk{background:var(--green);border-color:var(--green);}
 .task-chk-inner{width:6px;height:6px;border-radius:50%;background:#fff;display:none;}
 .task-row.done .task-chk-inner{display:block;}
+
+/* PRIORITY BADGE */
+.prio{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0;margin-top:1px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;}
+.prio-h{background:#FCEBEB;color:#A32D2D;}
+.prio-m{background:#FAEEDA;color:#854F0B;}
+.prio-l{background:#EAF3DE;color:#3B6D11;}
+.prio-n{background:var(--border);color:var(--muted);}
+
 .task-body{flex:1;min-width:0;}
 .task-title{font-size:13px;line-height:1.4;}
 .task-row.done .task-title{text-decoration:line-through;color:var(--muted);}
@@ -98,17 +107,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .dl-today{color:var(--warn);}
 .dl-soon{color:var(--warn);}
 .dl-ok{color:var(--muted);}
+.task-who{font-size:10px;color:var(--muted);font-style:italic;}
 .task-notes{font-size:10px;color:var(--muted);font-style:italic;}
 .task-del{width:22px;height:22px;border-radius:5px;border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:0;}
 .task-row:hover .task-del{opacity:1;}
 .task-del:hover{background:#FCEBEB;color:var(--danger);}
 
 /* ADD TASK */
-.add-task-row{display:flex;gap:8px;margin-top:10px;}
-.add-input{flex:1;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 12px;outline:none;}
+.add-task-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.add-input{flex:1;min-width:200px;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 12px;outline:none;}
 .add-input:focus{border-color:var(--accent);}
 .add-dl{width:130px;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 10px;outline:none;}
 .add-dl:focus{border-color:var(--accent);}
+.add-prio{background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 10px;outline:none;cursor:pointer;}
 
 /* PROGRESS */
 .prog-wrap{margin-top:14px;}
@@ -116,16 +127,49 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .prog-fill{height:100%;border-radius:2px;background:var(--green);transition:width .4s;}
 .prog-lbl{font-size:10px;color:var(--muted);margin-top:4px;text-align:right;}
 
+/* OVERZICHTSWEERGAVE */
+.overview-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:16px 18px;}
+.ov-section{margin-bottom:18px;}
+.ov-section-hdr{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border2);margin-bottom:8px;}
+.ov-day{font-size:12px;font-weight:500;}
+.ov-day-sub{font-size:10px;color:var(--muted);}
+.ov-cnt{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--surface2);color:var(--muted);}
+.ov-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;border:0.5px solid var(--border);background:var(--surface2);margin-bottom:4px;}
+.ov-who{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap;}
+.ov-title{font-size:12px;flex:1;}
+.ov-prio{font-size:9px;padding:1px 6px;border-radius:4px;white-space:nowrap;}
+.ov-nodl{font-size:12px;color:var(--muted);font-style:italic;padding:6px 0;}
+
+/* WEEKRAPPORT */
+.rapport-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:16px 18px;}
+.rp-person{margin-bottom:24px;padding-bottom:20px;border-bottom:0.5px solid var(--border2);}
+.rp-person:last-child{border-bottom:none;margin-bottom:0;}
+.rp-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.rp-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;}
+.rp-name{font-size:14px;font-weight:500;}
+.rp-stats{font-size:11px;color:var(--muted);}
+.rp-section{margin-bottom:8px;}
+.rp-section-lbl{font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
+.rp-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--border);}
+.rp-row:last-child{border-bottom:none;}
+.rp-chk{width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+.rp-chk.open{border:1.5px solid var(--border2);}
+.rp-chk.done{background:var(--green);}
+.rp-task{font-size:12px;flex:1;}
+.rp-dl{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);}
+.rp-prio{font-size:9px;padding:1px 6px;border-radius:4px;}
+
 /* PRINT */
 @media print{
   body{background:#fff;}
-  .hdr-r,.filters,.add-task-row,.task-del,.tabs,.stats{display:none!important;}
-  .task-row.done{opacity:.5;}
+  .hdr-r,.filters,.add-task-row,.task-del,.tabs,.stats,.view-bar,
+  #view-switcher,#tabs-row{display:none!important;}
+  .task-row.done{opacity:.45;}
   #view-main{padding:0;}
-  .person-card{border:none;box-shadow:none;}
+  .person-card,.overview-card,.rapport-card{border:none;box-shadow:none;}
+  .rp-person{page-break-inside:avoid;}
 }
 
-/* EMPTY */
 .empty{font-size:13px;color:var(--muted);font-style:italic;padding:12px 0;}
 </style>
 </head>
@@ -148,7 +192,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <div id="view-main">
   <div class="hdr">
     <div class="hdr-l">
-      <div class="logo-mark">OB</div>
+      <a href="index.html" style="text-decoration:none;">
+        <div class="logo-mark" title="Terug naar dashboard">OB</div>
+      </a>
       <div>
         <div class="hdr-title">Taakopvolging — Online Boekhouders BV</div>
         <div class="hdr-sub" id="hdr-sub">Laden...</div>
@@ -166,32 +212,92 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="stat"><div class="stat-lbl">Totaal open</div><div class="stat-val" id="s-open" style="color:var(--warn);">—</div></div>
     <div class="stat"><div class="stat-lbl">Afgewerkt</div><div class="stat-val" id="s-done" style="color:var(--green);">—</div></div>
     <div class="stat"><div class="stat-lbl">Vervallen</div><div class="stat-val" id="s-late" style="color:var(--danger);">—</div></div>
-    <div class="stat"><div class="stat-lbl">Lijsten geladen</div><div class="stat-val" id="s-lists" style="color:var(--accent);">—</div></div>
+    <div class="stat"><div class="stat-lbl">Lijsten</div><div class="stat-val" id="s-lists" style="color:var(--accent);">—</div></div>
   </div>
 
-  <div class="tabs" id="tabs"></div>
-  <div class="person-card" id="person-card"></div>
+  <!-- VIEW SWITCHER -->
+  <div id="view-switcher" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+    <button class="vbtn on" onclick="setView('person')" id="vbtn-person">Per persoon</button>
+    <button class="vbtn" onclick="setView('overview')" id="vbtn-overview">Overzicht op deadline</button>
+    <button class="vbtn" onclick="setView('rapport')" id="vbtn-rapport">Weekrapport</button>
+  </div>
+
+  <!-- PER PERSOON -->
+  <div id="view-person">
+    <div class="tabs" id="tabs" style="margin-bottom:10px;"></div>
+    <div class="person-card" id="person-card"></div>
+  </div>
+
+  <!-- OVERZICHT OP DEADLINE -->
+  <div id="view-overview" style="display:none;">
+    <div class="overview-card" id="overview-card"></div>
+  </div>
+
+  <!-- WEEKRAPPORT -->
+  <div id="view-rapport" style="display:none;">
+    <div class="rapport-card" id="rapport-card"></div>
+  </div>
 </div>
 
 <script>
 const CLIENT_ID='902073541291-ej7qro5u65qj0vsh76tsfapok85op77q.apps.googleusercontent.com';
 const SCOPE='https://www.googleapis.com/auth/tasks';
 const BASE='https://tasks.googleapis.com/tasks/v1';
+const PRIO_KEY='ob-tasks-prio';
+const JB_KEY='$2a$10$BtHZ/Eb32yTpLPLAodwcUOSh.KFe8/iDuO8PRwyUJVPBPVI1/2PWi';
+const JB_BIN='69e0d7c8aaba8821970682e4';
 
 let token=null;
 let lists=[];
 let tasks={};
 let activeList=null;
 let filterMode='open';
+let currentView='person';
+let prioData={};
 
 const COLORS=['#2d6ef5','#0ea870','#7c6ed9','#d97706','#e84b1f','#dc2626','#0891b2'];
+const PRIO_LABELS={h:'Hoog',m:'Medium',l:'Laag',n:'—'};
+const PRIO_CSS={h:'prio-h',m:'prio-m',l:'prio-l',n:'prio-n'};
 
-function av(name,idx){
+function avInfo(name,idx){
   const parts=name.trim().split(' ');
   const ini=(parts[0][0]+(parts[1]?parts[1][0]:'')).toUpperCase();
   const col=COLORS[idx%COLORS.length];
   return{ini,col};
 }
+
+async function loadPrio(){
+  try{
+    const r=await fetch('https://api.jsonbin.io/v3/b/'+JB_BIN+'/latest',{
+      headers:{'X-Master-Key':JB_KEY,'X-Bin-Meta':'false'}
+    });
+    if(r.ok){
+      const d=await r.json();
+      prioData=d.taskPrio||{};
+    }
+  }catch(e){
+    try{prioData=JSON.parse(localStorage.getItem(PRIO_KEY)||'{}');}catch(e2){prioData={};}
+  }
+}
+async function savePrio(){
+  localStorage.setItem(PRIO_KEY,JSON.stringify(prioData));
+  try{
+    const r=await fetch('https://api.jsonbin.io/v3/b/'+JB_BIN+'/latest',{
+      headers:{'X-Master-Key':JB_KEY,'X-Bin-Meta':'false'}
+    });
+    if(r.ok){
+      const current=await r.json();
+      const updated={...current,taskPrio:prioData};
+      await fetch('https://api.jsonbin.io/v3/b/'+JB_BIN,{
+        method:'PUT',
+        headers:{'Content-Type':'application/json','X-Master-Key':JB_KEY},
+        body:JSON.stringify(updated)
+      });
+    }
+  }catch(e){console.warn('JSONBin sync mislukt, lokaal opgeslagen');}
+}
+function getPrio(taskId){return prioData[taskId]||'n';}
+function setPrio(taskId,p){prioData[taskId]=p;savePrio();}
 
 /* AUTH */
 function startLogin(){
@@ -202,8 +308,7 @@ function startLogin(){
       if(resp.error){alert('Inloggen mislukt: '+resp.error);return;}
       token=resp.access_token;
       localStorage.setItem('ob-tasks-token',token);
-      showMain();
-      loadAll();
+      showMain();loadAll();
     }
   });
   client.requestAccessToken();
@@ -239,19 +344,16 @@ async function apiFetch(url){
   if(!r.ok)throw new Error('API fout '+r.status);
   return r.json();
 }
-
 async function apiPatch(url,body){
   const r=await fetch(url,{method:'PATCH',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
-  if(!r.ok)throw new Error('PATCH fout '+r.status);
+  if(!r.ok)throw new Error('PATCH fout');
   return r.json();
 }
-
 async function apiPost(url,body){
   const r=await fetch(url,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
-  if(!r.ok)throw new Error('POST fout '+r.status);
+  if(!r.ok)throw new Error('POST fout');
   return r.json();
 }
-
 async function apiDelete(url){
   await fetch(url,{method:'DELETE',headers:{Authorization:'Bearer '+token}});
 }
@@ -269,21 +371,15 @@ async function loadAll(){
     renderTabs();
     if(lists.length>0){
       activeList=activeList||lists[0].id;
-      renderPerson();
+      renderCurrentView();
     }
     updateStats();
     setSS('ok');
-  }catch(e){
-    setSS('err');
-    console.error(e);
-  }
+  }catch(e){setSS('err');console.error(e);}
 }
 
-async function refreshAll(){
-  await loadAll();
-}
+async function refreshAll(){await loadAll();}
 
-/* STATS */
 function updateStats(){
   let open=0,done=0,late=0;
   const now=new Date();now.setHours(0,0,0,0);
@@ -302,43 +398,100 @@ function updateStats(){
   document.getElementById('s-lists').textContent=lists.length;
 }
 
+/* VIEW SWITCHER */
+function setView(v){
+  currentView=v;
+  ['person','overview','rapport'].forEach(x=>{
+    document.getElementById('view-'+x).style.display=x===v?'block':'none';
+    document.getElementById('vbtn-'+x).classList.toggle('on',x===v);
+  });
+  renderCurrentView();
+}
+
+function renderCurrentView(){
+  if(currentView==='person')renderPerson();
+  else if(currentView==='overview')renderOverview();
+  else if(currentView==='rapport')renderRapport();
+}
+
 /* TABS */
 function renderTabs(){
   const el=document.getElementById('tabs');
   el.innerHTML=lists.map((l,i)=>{
-    const a=av(l.title,i);
+    const a=avInfo(l.title,i);
     const ts=tasks[l.id]||[];
     const open=ts.filter(t=>t.status!=='completed').length;
     const isActive=l.id===activeList;
     return`<div class="tab${isActive?' active':''}" onclick="setList('${l.id}')">
       <div class="av" style="background:${a.col}22;color:${a.col};">${a.ini}</div>
-      ${l.title}
+      ${esc(l.title)}
       <span class="cnt">${open}</span>
     </div>`;
   }).join('');
 }
 
 function setList(id){
-  activeList=id;
-  filterMode='open';
-  renderTabs();
-  renderPerson();
+  activeList=id;filterMode='open';
+  renderTabs();renderPerson();
 }
 
-/* PERSON VIEW */
+/* DEADLINE HELPER */
+function dlInfo(due,now){
+  if(!due)return null;
+  const d=new Date(due);d.setHours(0,0,0,0);
+  const diff=Math.round((d-now)/(1000*60*60*24));
+  let cls,lbl;
+  if(diff<0){cls='dl-past';lbl=`Vervallen (${Math.abs(diff)}d)`;}
+  else if(diff===0){cls='dl-today';lbl='Vandaag';}
+  else if(diff<=3){cls='dl-soon';lbl=`Over ${diff}d`;}
+  else{lbl=d.toLocaleDateString('nl',{day:'numeric',month:'short'});cls='dl-ok';}
+  return{cls,lbl,diff,d};
+}
+
+/* PRIO CYCLE */
+function cyclePrio(taskId,listId){
+  const cur=getPrio(taskId);
+  const next={n:'h',h:'m',m:'l',l:'n'}[cur];
+  setPrio(taskId,next);
+  savePrio();
+  renderCurrentView();
+  renderTabs();
+}
+
+/* TASK ROW HTML */
+function taskRowHtml(t,listId,now,showWho){
+  const done=t.status==='completed';
+  const dl=dlInfo(t.due,now);
+  const prio=getPrio(t.id);
+  const dlHtml=dl?`<span class="task-dl ${dl.cls}">${dl.lbl}</span>`:'';
+  const notesHtml=t.notes?`<span class="task-notes">${esc(t.notes.substring(0,50))}${t.notes.length>50?'...':''}</span>`:'';
+  const whoHtml=showWho?`<span class="task-who">${esc(lists.find(l=>l.id===listId)?.title||'')}</span>`:'';
+  return`<div class="task-row${done?' done':''}">
+    <div class="task-chk" onclick="toggleTask('${listId}','${t.id}','${done?'needsAction':'completed'}')">
+      <div class="task-chk-inner"></div>
+    </div>
+    <button class="prio ${PRIO_CSS[prio]}" onclick="cyclePrio('${t.id}','${listId}')" title="Prioriteit: klik om te wijzigen">${prio==='n'?'·':prio.toUpperCase()}</button>
+    <div class="task-body">
+      <div class="task-title">${esc(t.title)}</div>
+      <div class="task-meta">${dlHtml}${whoHtml}${notesHtml}</div>
+    </div>
+    <button class="task-del" onclick="deleteTask('${listId}','${t.id}')" title="Verwijderen">×</button>
+  </div>`;
+}
+
+/* PER PERSOON */
 function renderPerson(){
   const list=lists.find(l=>l.id===activeList);
   if(!list)return;
   const idx=lists.indexOf(list);
-  const a=av(list.title,idx);
+  const a=avInfo(list.title,idx);
   const ts=tasks[activeList]||[];
   const open=ts.filter(t=>t.status!=='completed');
   const done=ts.filter(t=>t.status==='completed');
-
-  let shown=filterMode==='open'?open:filterMode==='done'?done:ts;
   const now=new Date();now.setHours(0,0,0,0);
   const pct=ts.length?Math.round(done.length/ts.length*100):0;
 
+  const shown=filterMode==='open'?open:filterMode==='done'?done:ts;
   const el=document.getElementById('person-card');
   el.innerHTML=`
     <div class="person-hdr">
@@ -352,88 +505,234 @@ function renderPerson(){
       <div class="pbadges">
         <span class="pbadge pb-open">${open.length} open</span>
         <span class="pbadge pb-done">${done.length} klaar</span>
-        <span class="pb-list">${list.title}</span>
+        <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;">
+          H=hoog M=medium L=laag · klik prio-knop om te wijzigen
+        </span>
       </div>
     </div>
-
     <div class="filters">
       <button class="filter${filterMode==='open'?' on':''}" onclick="setFilter('open')">Open taken</button>
       <button class="filter${filterMode==='all'?' on':''}" onclick="setFilter('all')">Alle taken</button>
       <button class="filter${filterMode==='done'?' on':''}" onclick="setFilter('done')">Afgewerkt</button>
     </div>
-
     ${shown.length===0?`<div class="empty">Geen taken in deze weergave.</div>`:''}
-
-    ${filterMode!=='done'&&open.length>0?`<div class="section-lbl">Open taken (${open.length})</div>`:''}
-    ${(filterMode==='open'||filterMode==='all')?open.map(t=>taskRow(t,now)).join(''):''}
-
-    ${(filterMode==='all'||filterMode==='done')&&done.length>0?`<div class="section-lbl">Afgewerkt (${done.length})</div>`:''}
-    ${(filterMode==='all'||filterMode==='done')?done.map(t=>taskRow(t,now)).join(''):''}
-
+    ${(filterMode==='open'||filterMode==='all')&&open.length>0?`<div class="section-lbl">Open taken (${open.length})</div>${open.map(t=>taskRowHtml(t,activeList,now,false)).join('')}`:''}
+    ${(filterMode==='all'||filterMode==='done')&&done.length>0?`<div class="section-lbl">Afgewerkt (${done.length})</div>${done.map(t=>taskRowHtml(t,activeList,now,false)).join('')}`:''}
     <div class="add-task-row">
-      <input class="add-input" id="new-task-input" placeholder="Nieuwe taak toevoegen voor ${esc(list.title)}..." onkeydown="if(event.key==='Enter')addTask()">
+      <input class="add-input" id="new-task-input" placeholder="Nieuwe taak voor ${esc(list.title)}..." onkeydown="if(event.key==='Enter')addTask()">
       <input class="add-dl" id="new-task-dl" type="date">
+      <select class="add-prio" id="new-task-prio">
+        <option value="n">— Geen prio</option>
+        <option value="h">H Hoog</option>
+        <option value="m">M Medium</option>
+        <option value="l">L Laag</option>
+      </select>
       <button class="hbtn primary" onclick="addTask()">+ Toevoegen</button>
     </div>
-
     <div class="prog-wrap">
-      <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:${pct}%;"></div></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;"></div></div>
       <div class="prog-lbl">${pct}% afgewerkt · ${done.length}/${ts.length} taken</div>
     </div>`;
 }
 
-function taskRow(t,now){
-  const done=t.status==='completed';
-  let dlHtml='';
-  if(t.due){
-    const d=new Date(t.due);d.setHours(0,0,0,0);
-    const diff=Math.round((d-now)/(1000*60*60*24));
-    let cls='dl-ok',lbl='';
-    if(diff<0){cls='dl-past';lbl=`Vervallen (${Math.abs(diff)} dag${Math.abs(diff)>1?'en':''})`;}
-    else if(diff===0){cls='dl-today';lbl='Vandaag';}
-    else if(diff<=3){cls='dl-soon';lbl=`Over ${diff} dag${diff>1?'en':''}`;}
-    else{lbl=d.toLocaleDateString('nl',{day:'numeric',month:'short'});}
-    dlHtml=`<span class="task-dl ${cls}">${lbl}</span>`;
-  }
-  const notes=t.notes?`<span class="task-notes">${esc(t.notes.substring(0,60))}${t.notes.length>60?'...':''}</span>`:'';
-  return`<div class="task-row${done?' done':''}" id="tr-${t.id}">
-    <div class="task-chk" onclick="toggleTask('${t.id}','${done?'needsAction':'completed'}')">
-      <div class="task-chk-inner"></div>
-    </div>
-    <div class="task-body">
-      <div class="task-title">${esc(t.title)}</div>
-      <div class="task-meta">${dlHtml}${notes}</div>
-    </div>
-    <button class="task-del" onclick="deleteTask('${t.id}')" title="Verwijderen">×</button>
+function setFilter(mode){filterMode=mode;renderPerson();}
+
+/* OVERZICHT OP DEADLINE */
+function renderOverview(){
+  const now=new Date();now.setHours(0,0,0,0);
+  const el=document.getElementById('overview-card');
+
+  // Verzamel alle open taken met deadline
+  let withDl=[];
+  let withoutDl=[];
+  lists.forEach((l,li)=>{
+    (tasks[l.id]||[]).forEach(t=>{
+      if(t.status==='completed')return;
+      if(t.due)withDl.push({t,listId:l.id,listTitle:l.title,listIdx:li});
+      else withoutDl.push({t,listId:l.id,listTitle:l.title,listIdx:li});
+    });
+  });
+
+  // Sorteer op deadline
+  withDl.sort((a,b)=>new Date(a.t.due)-new Date(b.t.due));
+
+  // Groepeer per dag
+  const groups={};
+  withDl.forEach(item=>{
+    const d=new Date(item.t.due);d.setHours(0,0,0,0);
+    const key=d.toISOString().split('T')[0];
+    if(!groups[key])groups[key]=[];
+    groups[key].push(item);
+  });
+
+  let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <div style="font-size:15px;font-weight:500;">Alle open taken — gesorteerd op deadline</div>
+    <span style="font-size:11px;color:var(--muted);">${withDl.length} taken met deadline · ${withoutDl.length} zonder</span>
   </div>`;
+
+  Object.entries(groups).forEach(([key,items])=>{
+    const d=new Date(key);
+    const dl=dlInfo(key+'T00:00:00',now);
+    const dayLbl=d.toLocaleDateString('nl',{weekday:'long',day:'numeric',month:'long'});
+    const urgCls=dl&&dl.diff<0?'color:var(--danger)':dl&&dl.diff===0?'color:var(--warn)':'';
+    html+=`<div class="ov-section">
+      <div class="ov-section-hdr">
+        <div style="flex:1;">
+          <span class="ov-day" style="${urgCls}">${dayLbl}</span>
+          ${dl&&dl.diff<0?` <span style="font-size:10px;background:#FCEBEB;color:#A32D2D;padding:1px 6px;border-radius:4px;">vervallen</span>`:dl&&dl.diff===0?` <span style="font-size:10px;background:#FAEEDA;color:#854F0B;padding:1px 6px;border-radius:4px;">vandaag</span>`:''}
+        </div>
+        <span class="ov-cnt">${items.length} taak${items.length>1?'en':''}</span>
+      </div>
+      ${items.map(item=>{
+        const a=avInfo(item.listTitle,item.listIdx);
+        const prio=getPrio(item.t.id);
+        return`<div class="ov-row">
+          <span class="ov-who" style="background:${a.col}18;color:${a.col};">${a.ini}</span>
+          <span class="ov-title">${esc(item.t.title)}</span>
+          <button class="prio ${PRIO_CSS[prio]}" style="font-size:9px;" onclick="cyclePrio('${item.t.id}','${item.listId}')" title="Prioriteit wijzigen">${prio==='n'?'·':prio.toUpperCase()}</button>
+          <div class="task-chk" style="width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;" onclick="toggleTask('${item.listId}','${item.t.id}','completed')" title="Afvinken"></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  });
+
+  if(withoutDl.length>0){
+    html+=`<div class="ov-section">
+      <div class="ov-section-hdr">
+        <div class="ov-day" style="color:var(--muted);">Zonder deadline</div>
+        <span class="ov-cnt">${withoutDl.length}</span>
+      </div>
+      ${withoutDl.map(item=>{
+        const a=avInfo(item.listTitle,item.listIdx);
+        const prio=getPrio(item.t.id);
+        return`<div class="ov-row">
+          <span class="ov-who" style="background:${a.col}18;color:${a.col};">${a.ini}</span>
+          <span class="ov-title">${esc(item.t.title)}</span>
+          <button class="prio ${PRIO_CSS[prio]}" style="font-size:9px;" onclick="cyclePrio('${item.t.id}','${item.listId}')" title="Prioriteit wijzigen">${prio==='n'?'·':prio.toUpperCase()}</button>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  if(withDl.length===0&&withoutDl.length===0){
+    html+=`<div class="empty">Geen open taken gevonden.</div>`;
+  }
+
+  el.innerHTML=html;
 }
 
-function setFilter(mode){
-  filterMode=mode;
-  renderPerson();
+/* WEEKRAPPORT */
+function renderRapport(){
+  const now=new Date();now.setHours(0,0,0,0);
+  const el=document.getElementById('rapport-card');
+
+  // Bereken huidige week ma-vr
+  const day=now.getDay();
+  const ma=new Date(now);ma.setDate(now.getDate()-(day===0?6:day-1));
+  const vr=new Date(ma);vr.setDate(ma.getDate()+4);
+
+  const fmtD=(d)=>d.toLocaleDateString('nl',{day:'numeric',month:'long'});
+  const weekLbl=`Week ${getWeekNr(now)} · ${fmtD(ma)} — ${fmtD(vr)} ${now.getFullYear()}`;
+
+  let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px;">
+    <div>
+      <div style="font-size:15px;font-weight:500;">Weekrapport per persoon</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;">${weekLbl}</div>
+    </div>
+    <button class="hbtn" onclick="window.print()">Afdrukken</button>
+  </div>`;
+
+  lists.forEach((l,li)=>{
+    const ts=tasks[l.id]||[];
+    const open=ts.filter(t=>t.status!=='completed');
+    const done=ts.filter(t=>t.status==='completed');
+    const late=open.filter(t=>{if(!t.due)return false;const d=new Date(t.due);d.setHours(0,0,0,0);return d<now;});
+    const a=avInfo(l.title,li);
+    const pct=ts.length?Math.round(done.length/ts.length*100):0;
+
+    // Sorteer open: hoge prio eerst, dan op deadline
+    const prioOrd={h:0,m:1,l:2,n:3};
+    const openSorted=[...open].sort((a,b)=>{
+      const pa=prioOrd[getPrio(a.id)],pb=prioOrd[getPrio(b.id)];
+      if(pa!==pb)return pa-pb;
+      if(a.due&&b.due)return new Date(a.due)-new Date(b.due);
+      if(a.due)return -1;if(b.due)return 1;
+      return 0;
+    });
+
+    html+=`<div class="rp-person">
+      <div class="rp-hdr">
+        <div class="rp-av" style="background:${a.col}18;color:${a.col};">${a.ini}</div>
+        <div>
+          <div class="rp-name">${esc(l.title)}</div>
+          <div class="rp-stats">${open.length} open · ${done.length} klaar · ${pct}% afgewerkt${late.length>0?` · <span style="color:var(--danger);">${late.length} vervallen</span>`:''}</div>
+        </div>
+      </div>`;
+
+    if(openSorted.length>0){
+      html+=`<div class="rp-section">
+        <div class="rp-section-lbl">Open taken</div>
+        ${openSorted.map(t=>{
+          const dl=dlInfo(t.due,now);
+          const prio=getPrio(t.id);
+          return`<div class="rp-row">
+            <div class="rp-chk open"></div>
+            <span class="rp-task">${esc(t.title)}</span>
+            ${prio!=='n'?`<span class="rp-prio ${PRIO_CSS[prio]}">${PRIO_LABELS[prio]}</span>`:''}
+            ${dl?`<span class="rp-dl ${dl.cls}">${dl.lbl}</span>`:''}
+          </div>`;
+        }).join('')}
+      </div>`;
+    }
+
+    if(done.length>0){
+      html+=`<div class="rp-section">
+        <div class="rp-section-lbl">Afgewerkt</div>
+        ${done.slice(0,8).map(t=>`<div class="rp-row">
+          <div class="rp-chk done"></div>
+          <span class="rp-task" style="text-decoration:line-through;color:var(--muted);">${esc(t.title)}</span>
+        </div>`).join('')}
+        ${done.length>8?`<div style="font-size:11px;color:var(--muted);padding:4px 0;">+ ${done.length-8} meer afgewerkte taken</div>`:''}
+      </div>`;
+    }
+
+    if(ts.length===0){
+      html+=`<div class="empty">Geen taken in deze lijst.</div>`;
+    }
+
+    html+=`</div>`;
+  });
+
+  el.innerHTML=html;
+}
+
+function getWeekNr(d){
+  const date=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  const day=date.getUTCDay()||7;
+  date.setUTCDate(date.getUTCDate()+4-day);
+  const yearStart=new Date(Date.UTC(date.getUTCFullYear(),0,1));
+  return Math.ceil((((date-yearStart)/86400000)+1)/7);
 }
 
 /* TASK ACTIONS */
-async function toggleTask(taskId,newStatus){
-  if(!activeList)return;
+async function toggleTask(listId,taskId,newStatus){
   try{
-    await apiPatch(`${BASE}/lists/${activeList}/tasks/${taskId}`,{status:newStatus,completed:newStatus==='completed'?new Date().toISOString():null});
-    const ts=tasks[activeList];
+    await apiPatch(`${BASE}/lists/${listId}/tasks/${taskId}`,{status:newStatus,completed:newStatus==='completed'?new Date().toISOString():null});
+    const ts=tasks[listId];
     const t=ts.find(x=>x.id===taskId);
-    if(t){t.status=newStatus;}
-    renderPerson();
+    if(t)t.status=newStatus;
+    renderCurrentView();
     updateStats();
     renderTabs();
   }catch(e){console.error(e);}
 }
 
-async function deleteTask(taskId){
-  if(!activeList)return;
+async function deleteTask(listId,taskId){
   if(!confirm('Taak verwijderen?'))return;
   try{
-    await apiDelete(`${BASE}/lists/${activeList}/tasks/${taskId}`);
-    tasks[activeList]=tasks[activeList].filter(t=>t.id!==taskId);
-    renderPerson();
+    await apiDelete(`${BASE}/lists/${listId}/tasks/${taskId}`);
+    tasks[listId]=tasks[listId].filter(t=>t.id!==taskId);
+    renderCurrentView();
     updateStats();
     renderTabs();
   }catch(e){console.error(e);}
@@ -442,15 +741,17 @@ async function deleteTask(taskId){
 async function addTask(){
   const input=document.getElementById('new-task-input');
   const dlInput=document.getElementById('new-task-dl');
+  const prioInput=document.getElementById('new-task-prio');
   const title=input.value.trim();
   if(!title||!activeList)return;
   const body={title};
   if(dlInput.value)body.due=new Date(dlInput.value).toISOString();
   try{
     const newTask=await apiPost(`${BASE}/lists/${activeList}/tasks`,body);
+    if(prioInput.value!=='n'){setPrio(newTask.id,prioInput.value);savePrio();}
     tasks[activeList].unshift(newTask);
-    input.value='';dlInput.value='';
-    renderPerson();
+    input.value='';dlInput.value='';prioInput.value='n';
+    renderCurrentView();
     updateStats();
     renderTabs();
   }catch(e){console.error(e);}
@@ -459,7 +760,8 @@ async function addTask(){
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 /* INIT */
-window.addEventListener('load',()=>{
+window.addEventListener('load',async()=>{
+  await loadPrio();
   const saved=localStorage.getItem('ob-tasks-token');
   if(saved){token=saved;showMain();loadAll();}
 });
