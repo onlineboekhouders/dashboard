@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OB — Taakopvolging</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root{
+  --bg:#f0f2f7;--surface:#fff;--surface2:#f5f7fb;
+  --border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.12);
+  --text:#1a1d27;--muted:#8a93a8;
+  --accent:#2d6ef5;--green:#0ea870;--warn:#d97706;--danger:#dc2626;--purple:#7c6ed9;
+  --radius:12px;--radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* LOGIN */
+#view-login{display:flex;align-items:center;justify-content:center;min-height:100vh;}
+.login-card{background:var(--surface);border-radius:16px;border:0.5px solid var(--border2);padding:40px;max-width:400px;width:90%;text-align:center;}
+.login-logo{width:52px;height:52px;border-radius:12px;background:#e84b1f;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:#fff;margin:0 auto 16px;}
+.login-title{font-size:20px;font-weight:500;margin-bottom:6px;}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6;}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border-radius:10px;border:0.5px solid var(--border2);background:var(--surface);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;}
+.google-btn:hover{background:var(--surface2);}
+
+/* MAIN */
+#view-main{display:none;flex-direction:column;min-height:100vh;padding:14px;gap:12px;}
+
+/* HEADER */
+.hdr{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
+.hdr-l{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:32px;height:32px;border-radius:8px;background:#e84b1f;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:#fff;}
+.hdr-title{font-size:15px;font-weight:500;}
+.hdr-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.hdr-r{display:flex;align-items:center;gap:10px;}
+.sync-bar{display:flex;align-items:center;gap:5px;font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
+.sdot.ok{background:var(--green);}
+.sdot.busy{background:var(--warn);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.hbtn{font-size:11px;font-family:'DM Sans',sans-serif;padding:6px 12px;border-radius:7px;border:0.5px solid var(--border2);background:transparent;cursor:pointer;color:var(--text);}
+.hbtn:hover{background:var(--surface2);}
+.hbtn.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.hbtn.primary:hover{opacity:.88;}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.stat{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;}
+.stat-lbl{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.stat-val{font-size:22px;font-weight:500;}
+
+/* PERSON TABS */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.tab{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface);font-size:12px;cursor:pointer;transition:all .15s;color:var(--muted);}
+.tab:hover{border-color:var(--border2);color:var(--text);}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.tab .av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;}
+.tab .cnt{font-size:10px;padding:1px 6px;border-radius:10px;background:rgba(255,255,255,.25);}
+.tab:not(.active) .cnt{background:var(--surface2);color:var(--muted);}
+
+/* PERSON VIEW */
+.person-card{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:16px 18px;flex:1;}
+.person-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.person-info{display:flex;align-items:center;gap:10px;}
+.pav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;}
+.pname{font-size:16px;font-weight:500;}
+.prole{font-size:12px;color:var(--muted);}
+.pbadges{display:flex;gap:6px;align-items:center;}
+.pbadge{font-size:11px;padding:3px 10px;border-radius:20px;}
+.pb-open{background:#FAEEDA;color:#854F0B;}
+.pb-done{background:#EAF3DE;color:#3B6D11;}
+.pb-list{font-size:10px;padding:2px 8px;border-radius:6px;background:var(--surface2);color:var(--muted);font-family:'DM Mono',monospace;}
+
+/* FILTERS */
+.filters{display:flex;gap:6px;margin-bottom:14px;}
+.filter{font-size:11px;padding:4px 10px;border-radius:6px;border:0.5px solid var(--border);background:transparent;cursor:pointer;color:var(--muted);}
+.filter.on{background:var(--surface2);color:var(--text);border-color:var(--border2);}
+
+/* TASK LIST */
+.section-lbl{font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:12px 0 7px;}
+.task-row{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface2);margin-bottom:5px;transition:opacity .2s;}
+.task-row.done{opacity:.38;}
+.task-chk{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.task-chk:hover{border-color:var(--green);}
+.task-row.done .task-chk{background:var(--green);border-color:var(--green);}
+.task-chk-inner{width:6px;height:6px;border-radius:50%;background:#fff;display:none;}
+.task-row.done .task-chk-inner{display:block;}
+.task-body{flex:1;min-width:0;}
+.task-title{font-size:13px;line-height:1.4;}
+.task-row.done .task-title{text-decoration:line-through;color:var(--muted);}
+.task-meta{display:flex;gap:8px;margin-top:3px;flex-wrap:wrap;align-items:center;}
+.task-dl{font-size:10px;font-family:'DM Mono',monospace;}
+.dl-past{color:var(--danger);}
+.dl-today{color:var(--warn);}
+.dl-soon{color:var(--warn);}
+.dl-ok{color:var(--muted);}
+.task-notes{font-size:10px;color:var(--muted);font-style:italic;}
+.task-del{width:22px;height:22px;border-radius:5px;border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:0;}
+.task-row:hover .task-del{opacity:1;}
+.task-del:hover{background:#FCEBEB;color:var(--danger);}
+
+/* ADD TASK */
+.add-task-row{display:flex;gap:8px;margin-top:10px;}
+.add-input{flex:1;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 12px;outline:none;}
+.add-input:focus{border-color:var(--accent);}
+.add-dl{width:130px;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 10px;outline:none;}
+.add-dl:focus{border-color:var(--accent);}
+
+/* PROGRESS */
+.prog-wrap{margin-top:14px;}
+.prog-bar{height:4px;border-radius:2px;background:var(--border2);overflow:hidden;}
+.prog-fill{height:100%;border-radius:2px;background:var(--green);transition:width .4s;}
+.prog-lbl{font-size:10px;color:var(--muted);margin-top:4px;text-align:right;}
+
+/* PRINT */
+@media print{
+  body{background:#fff;}
+  .hdr-r,.filters,.add-task-row,.task-del,.tabs,.stats{display:none!important;}
+  .task-row.done{opacity:.5;}
+  #view-main{padding:0;}
+  .person-card{border:none;box-shadow:none;}
+}
+
+/* EMPTY */
+.empty{font-size:13px;color:var(--muted);font-style:italic;padding:12px 0;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="view-login">
+  <div class="login-card">
+    <div class="login-logo">OB</div>
+    <div class="login-title">Taakopvolging</div>
+    <div class="login-sub">Persoonlijk dashboard voor Tom Dewaele.<br>Verbind met Google om je gedeelde takenlijsten te laden.</div>
+    <button class="google-btn" onclick="startLogin()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Verbinden met Google
+    </button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="view-main">
+  <div class="hdr">
+    <div class="hdr-l">
+      <div class="logo-mark">OB</div>
+      <div>
+        <div class="hdr-title">Taakopvolging — Online Boekhouders BV</div>
+        <div class="hdr-sub" id="hdr-sub">Laden...</div>
+      </div>
+    </div>
+    <div class="hdr-r">
+      <div class="sync-bar"><div class="sdot busy" id="sdot"></div><span id="slbl">laden...</span></div>
+      <button class="hbtn" onclick="refreshAll()">↺ Vernieuwen</button>
+      <button class="hbtn" onclick="window.print()">Afdrukken</button>
+      <button class="hbtn" onclick="logout()">Uitloggen</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-lbl">Totaal open</div><div class="stat-val" id="s-open" style="color:var(--warn);">—</div></div>
+    <div class="stat"><div class="stat-lbl">Afgewerkt</div><div class="stat-val" id="s-done" style="color:var(--green);">—</div></div>
+    <div class="stat"><div class="stat-lbl">Vervallen</div><div class="stat-val" id="s-late" style="color:var(--danger);">—</div></div>
+    <div class="stat"><div class="stat-lbl">Lijsten geladen</div><div class="stat-val" id="s-lists" style="color:var(--accent);">—</div></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div class="person-card" id="person-card"></div>
+</div>
+
+<script>
+const CLIENT_ID='902073541291-ej7qro5u65qj0vsh76tsfapok85op77q.apps.googleusercontent.com';
+const SCOPE='https://www.googleapis.com/auth/tasks';
+const BASE='https://tasks.googleapis.com/tasks/v1';
+
+let token=null;
+let lists=[];
+let tasks={};
+let activeList=null;
+let filterMode='open';
+
+const COLORS=['#2d6ef5','#0ea870','#7c6ed9','#d97706','#e84b1f','#dc2626','#0891b2'];
+
+function av(name,idx){
+  const parts=name.trim().split(' ');
+  const ini=(parts[0][0]+(parts[1]?parts[1][0]:'')).toUpperCase();
+  const col=COLORS[idx%COLORS.length];
+  return{ini,col};
+}
+
+/* AUTH */
+function startLogin(){
+  const client=google.accounts.oauth2.initTokenClient({
+    client_id:CLIENT_ID,
+    scope:SCOPE,
+    callback:(resp)=>{
+      if(resp.error){alert('Inloggen mislukt: '+resp.error);return;}
+      token=resp.access_token;
+      localStorage.setItem('ob-tasks-token',token);
+      showMain();
+      loadAll();
+    }
+  });
+  client.requestAccessToken();
+}
+
+function logout(){
+  token=null;
+  localStorage.removeItem('ob-tasks-token');
+  document.getElementById('view-main').style.display='none';
+  document.getElementById('view-login').style.display='flex';
+}
+
+function setSS(s){
+  const dot=document.getElementById('sdot');
+  const lbl=document.getElementById('slbl');
+  dot.className='sdot';
+  if(s==='ok'){dot.classList.add('ok');lbl.textContent='gesynchroniseerd';}
+  else if(s==='busy'){dot.classList.add('busy');lbl.textContent='laden...';}
+}
+
+function showMain(){
+  document.getElementById('view-login').style.display='none';
+  document.getElementById('view-main').style.display='flex';
+  const now=new Date();
+  document.getElementById('hdr-sub').textContent=
+    'Persoonlijk overzicht · '+now.toLocaleDateString('nl',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+
+/* API */
+async function apiFetch(url){
+  const r=await fetch(url,{headers:{Authorization:'Bearer '+token}});
+  if(r.status===401){logout();throw new Error('token verlopen');}
+  if(!r.ok)throw new Error('API fout '+r.status);
+  return r.json();
+}
+
+async function apiPatch(url,body){
+  const r=await fetch(url,{method:'PATCH',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok)throw new Error('PATCH fout '+r.status);
+  return r.json();
+}
+
+async function apiPost(url,body){
+  const r=await fetch(url,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok)throw new Error('POST fout '+r.status);
+  return r.json();
+}
+
+async function apiDelete(url){
+  await fetch(url,{method:'DELETE',headers:{Authorization:'Bearer '+token}});
+}
+
+async function loadAll(){
+  setSS('busy');
+  try{
+    const data=await apiFetch(BASE+'/users/@me/lists?maxResults=100');
+    lists=data.items||[];
+    tasks={};
+    await Promise.all(lists.map(async(l)=>{
+      const t=await apiFetch(BASE+'/lists/'+l.id+'/tasks?maxResults=100&showCompleted=true&showHidden=true');
+      tasks[l.id]=(t.items||[]).filter(t=>!t.parent);
+    }));
+    renderTabs();
+    if(lists.length>0){
+      activeList=activeList||lists[0].id;
+      renderPerson();
+    }
+    updateStats();
+    setSS('ok');
+  }catch(e){
+    setSS('err');
+    console.error(e);
+  }
+}
+
+async function refreshAll(){
+  await loadAll();
+}
+
+/* STATS */
+function updateStats(){
+  let open=0,done=0,late=0;
+  const now=new Date();now.setHours(0,0,0,0);
+  Object.values(tasks).forEach(arr=>{
+    arr.forEach(t=>{
+      if(t.status==='completed')done++;
+      else{
+        open++;
+        if(t.due){const d=new Date(t.due);d.setHours(0,0,0,0);if(d<now)late++;}
+      }
+    });
+  });
+  document.getElementById('s-open').textContent=open;
+  document.getElementById('s-done').textContent=done;
+  document.getElementById('s-late').textContent=late;
+  document.getElementById('s-lists').textContent=lists.length;
+}
+
+/* TABS */
+function renderTabs(){
+  const el=document.getElementById('tabs');
+  el.innerHTML=lists.map((l,i)=>{
+    const a=av(l.title,i);
+    const ts=tasks[l.id]||[];
+    const open=ts.filter(t=>t.status!=='completed').length;
+    const isActive=l.id===activeList;
+    return`<div class="tab${isActive?' active':''}" onclick="setList('${l.id}')">
+      <div class="av" style="background:${a.col}22;color:${a.col};">${a.ini}</div>
+      ${l.title}
+      <span class="cnt">${open}</span>
+    </div>`;
+  }).join('');
+}
+
+function setList(id){
+  activeList=id;
+  filterMode='open';
+  renderTabs();
+  renderPerson();
+}
+
+/* PERSON VIEW */
+function renderPerson(){
+  const list=lists.find(l=>l.id===activeList);
+  if(!list)return;
+  const idx=lists.indexOf(list);
+  const a=av(list.title,idx);
+  const ts=tasks[activeList]||[];
+  const open=ts.filter(t=>t.status!=='completed');
+  const done=ts.filter(t=>t.status==='completed');
+
+  let shown=filterMode==='open'?open:filterMode==='done'?done:ts;
+  const now=new Date();now.setHours(0,0,0,0);
+  const pct=ts.length?Math.round(done.length/ts.length*100):0;
+
+  const el=document.getElementById('person-card');
+  el.innerHTML=`
+    <div class="person-hdr">
+      <div class="person-info">
+        <div class="pav" style="background:${a.col}18;color:${a.col};">${a.ini}</div>
+        <div>
+          <div class="pname">${esc(list.title)}</div>
+          <div class="prole">Gedeelde takenlijst</div>
+        </div>
+      </div>
+      <div class="pbadges">
+        <span class="pbadge pb-open">${open.length} open</span>
+        <span class="pbadge pb-done">${done.length} klaar</span>
+        <span class="pb-list">${list.title}</span>
+      </div>
+    </div>
+
+    <div class="filters">
+      <button class="filter${filterMode==='open'?' on':''}" onclick="setFilter('open')">Open taken</button>
+      <button class="filter${filterMode==='all'?' on':''}" onclick="setFilter('all')">Alle taken</button>
+      <button class="filter${filterMode==='done'?' on':''}" onclick="setFilter('done')">Afgewerkt</button>
+    </div>
+
+    ${shown.length===0?`<div class="empty">Geen taken in deze weergave.</div>`:''}
+
+    ${filterMode!=='done'&&open.length>0?`<div class="section-lbl">Open taken (${open.length})</div>`:''}
+    ${(filterMode==='open'||filterMode==='all')?open.map(t=>taskRow(t,now)).join(''):''}
+
+    ${(filterMode==='all'||filterMode==='done')&&done.length>0?`<div class="section-lbl">Afgewerkt (${done.length})</div>`:''}
+    ${(filterMode==='all'||filterMode==='done')?done.map(t=>taskRow(t,now)).join(''):''}
+
+    <div class="add-task-row">
+      <input class="add-input" id="new-task-input" placeholder="Nieuwe taak toevoegen voor ${esc(list.title)}..." onkeydown="if(event.key==='Enter')addTask()">
+      <input class="add-dl" id="new-task-dl" type="date">
+      <button class="hbtn primary" onclick="addTask()">+ Toevoegen</button>
+    </div>
+
+    <div class="prog-wrap">
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:${pct}%;"></div></div>
+      <div class="prog-lbl">${pct}% afgewerkt · ${done.length}/${ts.length} taken</div>
+    </div>`;
+}
+
+function taskRow(t,now){
+  const done=t.status==='completed';
+  let dlHtml='';
+  if(t.due){
+    const d=new Date(t.due);d.setHours(0,0,0,0);
+    const diff=Math.round((d-now)/(1000*60*60*24));
+    let cls='dl-ok',lbl='';
+    if(diff<0){cls='dl-past';lbl=`Vervallen (${Math.abs(diff)} dag${Math.abs(diff)>1?'en':''})`;}
+    else if(diff===0){cls='dl-today';lbl='Vandaag';}
+    else if(diff<=3){cls='dl-soon';lbl=`Over ${diff} dag${diff>1?'en':''}`;}
+    else{lbl=d.toLocaleDateString('nl',{day:'numeric',month:'short'});}
+    dlHtml=`<span class="task-dl ${cls}">${lbl}</span>`;
+  }
+  const notes=t.notes?`<span class="task-notes">${esc(t.notes.substring(0,60))}${t.notes.length>60?'...':''}</span>`:'';
+  return`<div class="task-row${done?' done':''}" id="tr-${t.id}">
+    <div class="task-chk" onclick="toggleTask('${t.id}','${done?'needsAction':'completed'}')">
+      <div class="task-chk-inner"></div>
+    </div>
+    <div class="task-body">
+      <div class="task-title">${esc(t.title)}</div>
+      <div class="task-meta">${dlHtml}${notes}</div>
+    </div>
+    <button class="task-del" onclick="deleteTask('${t.id}')" title="Verwijderen">×</button>
+  </div>`;
+}
+
+function setFilter(mode){
+  filterMode=mode;
+  renderPerson();
+}
+
+/* TASK ACTIONS */
+async function toggleTask(taskId,newStatus){
+  if(!activeList)return;
+  try{
+    await apiPatch(`${BASE}/lists/${activeList}/tasks/${taskId}`,{status:newStatus,completed:newStatus==='completed'?new Date().toISOString():null});
+    const ts=tasks[activeList];
+    const t=ts.find(x=>x.id===taskId);
+    if(t){t.status=newStatus;}
+    renderPerson();
+    updateStats();
+    renderTabs();
+  }catch(e){console.error(e);}
+}
+
+async function deleteTask(taskId){
+  if(!activeList)return;
+  if(!confirm('Taak verwijderen?'))return;
+  try{
+    await apiDelete(`${BASE}/lists/${activeList}/tasks/${taskId}`);
+    tasks[activeList]=tasks[activeList].filter(t=>t.id!==taskId);
+    renderPerson();
+    updateStats();
+    renderTabs();
+  }catch(e){console.error(e);}
+}
+
+async function addTask(){
+  const input=document.getElementById('new-task-input');
+  const dlInput=document.getElementById('new-task-dl');
+  const title=input.value.trim();
+  if(!title||!activeList)return;
+  const body={title};
+  if(dlInput.value)body.due=new Date(dlInput.value).toISOString();
+  try{
+    const newTask=await apiPost(`${BASE}/lists/${activeList}/tasks`,body);
+    tasks[activeList].unshift(newTask);
+    input.value='';dlInput.value='';
+    renderPerson();
+    updateStats();
+    renderTabs();
+  }catch(e){console.error(e);}
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* INIT */
+window.addEventListener('load',()=>{
+  const saved=localStorage.getItem('ob-tasks-token');
+  if(saved){token=saved;showMain();loadAll();}
+});
+</script>
+</body>
+</html>
