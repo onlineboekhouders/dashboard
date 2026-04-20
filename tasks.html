@@ -309,28 +309,39 @@ async function loadPrio(){
       const d=await r.json();
       prioData=d.taskPrio||{};
       agendaData=d.agendaData||{};
+      // Als JSONBin geen agenda heeft maar localStorage wel, gebruik localStorage
+      if(!d.agendaData){
+        try{const loc=JSON.parse(localStorage.getItem('ob-agenda')||'{}');
+          if(Object.keys(loc).length>0){agendaData=loc;savePrio();}
+        }catch(e){}
+      }
     }
   }catch(e){
     try{prioData=JSON.parse(localStorage.getItem(PRIO_KEY)||'{}');}catch(e2){prioData={};}
-    agendaData={};
+    try{agendaData=JSON.parse(localStorage.getItem('ob-agenda')||'{}');}catch(e2){agendaData={};}
   }
 }
-async function savePrio(){
+let saveTimer=null;
+function savePrio(){
   localStorage.setItem(PRIO_KEY,JSON.stringify(prioData));
-  try{
-    const r=await fetch('https://api.jsonbin.io/v3/b/'+JB_BIN+'/latest',{
-      headers:{'X-Master-Key':JB_KEY,'X-Bin-Meta':'false'}
-    });
-    if(r.ok){
-      const current=await r.json();
-      const updated={...current,taskPrio:prioData,agendaData:agendaData};
-      await fetch('https://api.jsonbin.io/v3/b/'+JB_BIN,{
-        method:'PUT',
-        headers:{'Content-Type':'application/json','X-Master-Key':JB_KEY},
-        body:JSON.stringify(updated)
+  localStorage.setItem('ob-agenda',JSON.stringify(agendaData));
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    try{
+      const r=await fetch('https://api.jsonbin.io/v3/b/'+JB_BIN+'/latest',{
+        headers:{'X-Master-Key':JB_KEY,'X-Bin-Meta':'false'}
       });
-    }
-  }catch(e){console.warn('JSONBin sync mislukt, lokaal opgeslagen');}
+      if(r.ok){
+        const current=await r.json();
+        const updated={...current,taskPrio:prioData,agendaData:agendaData};
+        await fetch('https://api.jsonbin.io/v3/b/'+JB_BIN,{
+          method:'PUT',
+          headers:{'Content-Type':'application/json','X-Master-Key':JB_KEY},
+          body:JSON.stringify(updated)
+        });
+      }
+    }catch(e){console.warn('JSONBin sync mislukt, lokaal opgeslagen');}
+  },800);
 }
 function getPrio(taskId){return prioData[taskId]||'n';}
 function setPrio(taskId,p){prioData[taskId]=p;savePrio();}
