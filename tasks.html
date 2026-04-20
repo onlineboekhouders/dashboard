@@ -159,6 +159,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .rp-dl{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);}
 .rp-prio{font-size:9px;padding:1px 6px;border-radius:4px;}
 
+/* SUBTAKEN */
+.task-row.subtask{margin-left:26px;border-left:2px solid var(--border2);border-radius:0 var(--radius-sm) var(--radius-sm) 0;background:var(--bg);}
+.task-row.subtask .task-title{font-size:12px;}
+
 /* TE BESPREKEN */
 .agenda-wrap{margin-top:18px;padding-top:14px;border-top:0.5px solid var(--border2);}
 .agenda-title{font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
@@ -419,7 +423,7 @@ async function loadAll(){
     tasks={};
     await Promise.all(lists.map(async(l)=>{
       const t=await apiFetch(BASE+'/lists/'+l.id+'/tasks?maxResults=100&showCompleted=true&showHidden=true');
-      tasks[l.id]=(t.items||[]).filter(t=>!t.parent);
+      tasks[l.id]=t.items||[];
     }));
     renderTabs();
     if(lists.length>0){
@@ -437,7 +441,7 @@ function updateStats(){
   let open=0,done=0,late=0;
   const now=new Date();now.setHours(0,0,0,0);
   Object.values(tasks).forEach(arr=>{
-    arr.forEach(t=>{
+    arr.filter(t=>!t.parent).forEach(t=>{
       if(t.status==='completed')done++;
       else{
         open++;
@@ -512,24 +516,38 @@ function cyclePrio(taskId,listId){
 }
 
 /* TASK ROW HTML */
-function taskRowHtml(t,listId,now,showWho){
+function taskRowHtml(t,listId,now,showWho,isSubtask){
   const done=t.status==='completed';
   const dl=dlInfo(t.due,now);
   const prio=getPrio(t.id);
   const dlHtml=dl?`<span class="task-dl ${dl.cls}">${dl.lbl}</span>`:'';
   const notesHtml=t.notes?`<span class="task-notes">${esc(t.notes.substring(0,50))}${t.notes.length>50?'...':''}</span>`:'';
   const whoHtml=showWho?`<span class="task-who">${esc(lists.find(l=>l.id===listId)?.title||'')}</span>`:'';
-  return`<div class="task-row${done?' done':''}">
+  const subCls=isSubtask?' subtask':'';
+  const prioHtml=isSubtask?'':`<button class="prio ${PRIO_CSS[prio]}" onclick="cyclePrio('${t.id}','${listId}')" title="Prioriteit: klik om te wijzigen">${prio==='n'?'·':prio.toUpperCase()}</button>`;
+  return`<div class="task-row${done?' done':''}${subCls}">
     <div class="task-chk" onclick="toggleTask('${listId}','${t.id}','${done?'needsAction':'completed'}')">
       <div class="task-chk-inner"></div>
     </div>
-    <button class="prio ${PRIO_CSS[prio]}" onclick="cyclePrio('${t.id}','${listId}')" title="Prioriteit: klik om te wijzigen">${prio==='n'?'·':prio.toUpperCase()}</button>
+    ${prioHtml}
     <div class="task-body">
       <div class="task-title">${esc(t.title)}</div>
       <div class="task-meta">${dlHtml}${whoHtml}${notesHtml}</div>
     </div>
     <button class="task-del" onclick="deleteTask('${listId}','${t.id}')" title="Verwijderen">×</button>
   </div>`;
+}
+
+function taskWithSubtasksHtml(t,listId,now,showWho,allTasks){
+  const subtasks=allTasks.filter(s=>s.parent===t.id);
+  let html=taskRowHtml(t,listId,now,showWho,false);
+  if(subtasks.length>0){
+    const openSubs=subtasks.filter(s=>s.status!=='completed');
+    const doneSubs=subtasks.filter(s=>s.status==='completed');
+    html+=openSubs.map(s=>taskRowHtml(s,listId,now,false,true)).join('');
+    html+=doneSubs.map(s=>taskRowHtml(s,listId,now,false,true)).join('');
+  }
+  return html;
 }
 
 /* PER PERSOON */
@@ -600,7 +618,7 @@ function renderOverview(){
   let withDl=[];
   let withoutDl=[];
   lists.forEach((l,li)=>{
-    (tasks[l.id]||[]).forEach(t=>{
+    (tasks[l.id]||[]).filter(t=>!t.parent).forEach(t=>{
       if(t.status==='completed')return;
       if(t.due)withDl.push({t,listId:l.id,listTitle:l.title,listIdx:li});
       else withoutDl.push({t,listId:l.id,listTitle:l.title,listIdx:li});
