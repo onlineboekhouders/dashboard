@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Online Boekhouders BV — Team Dashboard v12</title>
+<title>Online Boekhouders BV — Team Dashboard v13</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23e84b1f'/><text y='.9em' font-size='75' x='12' fill='white'>@</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -390,7 +390,7 @@ textarea.ai{resize:vertical;min-height:40px;line-height:1.5;}
 <div id="view-admin">
 <div class="admin-wrap">
   <div class="admin-hdr">
-    <div class="admin-title">⚙ Beheerpaneel <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-left:8px;">v12</span> <button class="logoutbtn" onclick="logout()">uitloggen</button></div>
+    <div class="admin-title">⚙ Beheerpaneel <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-left:8px;">v13</span> <button class="logoutbtn" onclick="logout()">uitloggen</button></div>
     <button class="back-btn" onclick="closeAdmin()">← Terug</button>
   </div>
   <div class="tabs">
@@ -882,14 +882,23 @@ function setPW(w){
   rAPlanning();
 }
 function rAPlanning(){
-  const nu=new Date();
-  const ma=getMa(nu);
-  // Corrigeer: als we in het weekend zitten, gebruik vorige maandag
-  const start=new Date(ma);
-  start.setDate(ma.getDate()+planWeekOffset*7);
-  // Verifieer: start moet altijd een maandag zijn
-  while(start.getDay()!==1){start.setDate(start.getDate()-1);}
-  const dagen=Array.from({length:5},(_,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);return d;});
+  // Bereken maandag van de gevraagde week
+  const nu = new Date();
+  nu.setHours(0,0,0,0);
+  const jsDay = nu.getDay(); // 0=zo, 1=ma, 6=za
+  const diffNaarMa = jsDay === 0 ? -6 : 1 - jsDay;
+  const maDeze = new Date(nu);
+  maDeze.setDate(nu.getDate() + diffNaarMa);
+  // Voeg offset toe in weken
+  const start = new Date(maDeze);
+  start.setDate(maDeze.getDate() + (planWeekOffset * 7));
+  // Maak 5 werkdagen
+  const dagen = [];
+  for(let i = 0; i < 5; i++){
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    dagen.push(d);
+  }
   document.getElementById('aplanningel').innerHTML=dagen.map(dag=>{
     const key=dk(dag),evts=planning[key]||[],ovrs=dagOverrides[key]||{},hvd=isVandaag(dag);
     const evtsHtml=evts.map((e,ei)=>`<div class="pevtrow">
