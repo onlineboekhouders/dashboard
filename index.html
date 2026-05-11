@@ -871,7 +871,7 @@ function setPW(w){
 }
 function rAPlanning(){
   const ma=getMa(new Date());
-  const start=new Date(ma);start.setDate(ma.getDate()+planWeekOffset*5);
+  const start=new Date(ma);start.setDate(ma.getDate()+planWeekOffset*7);
   const dagen=Array.from({length:5},(_,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);return d;});
   document.getElementById('aplanningel').innerHTML=dagen.map(dag=>{
     const key=dk(dag),evts=planning[key]||[],ovrs=dagOverrides[key]||{},hvd=isVandaag(dag);
