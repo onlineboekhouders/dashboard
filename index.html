@@ -850,7 +850,12 @@ async function doLogin(){
   else document.getElementById('lerr').style.display='block';
 }
 function logout(){isAdmin=false;closeAdmin();}
-function showAdmin(){hideAll();document.getElementById('view-admin').style.display='block';renderAdminAll();}
+function showAdmin(){
+  hideAll();
+  document.getElementById('view-admin').style.display='block';
+  // Kleine vertraging zodat de DOM zeker gerenderd is
+  setTimeout(()=>{renderAdminAll();switchTab('planning');},50);
+}
 function closeAdmin(){hideAll();document.getElementById('view-tv').style.display='flex';renderAll();}
 
 /* TABS */
@@ -859,6 +864,13 @@ function switchTab(tab){
   document.querySelectorAll('.tbtn').forEach((b,i)=>b.classList.toggle('on',tabs[i]===tab));
   document.querySelectorAll('.tpanel').forEach(p=>p.classList.remove('on'));
   document.getElementById('tp-'+tab).classList.add('on');
+  // Herrender de actieve tab
+  const renderMap={
+    planning:rAPlanning, vantom:rAVanTom, taken:rATaken,
+    projecten:rAProjecten, team:rATeam, maand:rAMaand,
+    deadlines:rADL, vergad:rAVerg
+  };
+  if(renderMap[tab])renderMap[tab]();
 }
 function renderAdminAll(){rAPlanning();rAVanTom();rATaken();rAProjecten();rATeam();rAMaand();rADL();rAVerg();}
 
@@ -872,6 +884,8 @@ function setPW(w){
 function rAPlanning(){
   const ma=getMa(new Date());
   const start=new Date(ma);start.setDate(ma.getDate()+planWeekOffset*7);
+  // Zorg dat we altijd op een werkdag starten
+  while(start.getDay()===0||start.getDay()===6)start.setDate(start.getDate()+1);
   const dagen=Array.from({length:5},(_,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);return d;});
   document.getElementById('aplanningel').innerHTML=dagen.map(dag=>{
     const key=dk(dag),evts=planning[key]||[],ovrs=dagOverrides[key]||{},hvd=isVandaag(dag);
