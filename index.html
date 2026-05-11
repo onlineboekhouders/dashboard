@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Online Boekhouders BV — Team Dashboard v14</title>
+<title>Online Boekhouders BV — Team Dashboard v15</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23e84b1f'/><text y='.9em' font-size='75' x='12' fill='white'>@</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -390,7 +390,7 @@ textarea.ai{resize:vertical;min-height:40px;line-height:1.5;}
 <div id="view-admin">
 <div class="admin-wrap">
   <div class="admin-hdr">
-    <div class="admin-title">⚙ Beheerpaneel <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-left:8px;">v14</span> <button class="logoutbtn" onclick="logout()">uitloggen</button></div>
+    <div class="admin-title">⚙ Beheerpaneel <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-left:8px;">v15</span> <button class="logoutbtn" onclick="logout()">uitloggen</button></div>
     <button class="back-btn" onclick="closeAdmin()">← Terug</button>
   </div>
   <div class="tabs">
@@ -907,7 +907,7 @@ function rAPlanning(){
     dagen.push(d);
   }
   document.getElementById('aplanningel').innerHTML=dagen.map(dag=>{
-    const key=dk(dag),evts=planning[key]||[],ovrs=dagOverrides[key]||{},hvd=isVandaag(dag);
+    const key=dk(dag),evts=(planning[key]||[]).filter(e=>e&&e.titel!==undefined),ovrs=dagOverrides[key]||{},hvd=isVandaag(dag);
     const evtsHtml=evts.map((e,ei)=>`<div class="pevtrow">
       <input class="ai" style="width:60px;" value="${esc(e.tijd)}" placeholder="09:00" oninput="setPE('${key}',${ei},'tijd',this.value)">
       <input class="ai" style="flex:1;" value="${esc(e.titel)}" placeholder="Omschrijving" oninput="setPE('${key}',${ei},'titel',this.value)">
