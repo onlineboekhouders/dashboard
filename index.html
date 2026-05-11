@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Online Boekhouders BV — Team Dashboard v16</title>
+<title>Online Boekhouders BV — Team Dashboard v18</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23e84b1f'/><text y='.9em' font-size='75' x='12' fill='white'>@</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -147,6 +147,10 @@ function renderVanTom(){
 .tf2{background:rgba(245,158,11,.1);color:var(--warn);}
 .avdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .ay{background:var(--green);}.an{background:var(--danger);}.ab{background:var(--warn);}
+.avm{background:var(--accent);}.anm{background:var(--purple);}
+.av-time{font-size:7px;padding:1px 4px;border-radius:3px;font-family:'DM Mono',monospace;font-weight:500;}
+.av-time-vm{background:rgba(79,142,247,.15);color:var(--accent);}
+.av-time-nm{background:rgba(167,139,250,.15);color:var(--purple);}
 
 /* LOC TELLER */
 .loc-teller{display:flex;gap:8px;flex-shrink:0;margin-bottom:6px;flex-wrap:wrap;}
@@ -390,7 +394,7 @@ textarea.ai{resize:vertical;min-height:40px;line-height:1.5;}
 <div id="view-admin">
 <div class="admin-wrap">
   <div class="admin-hdr">
-    <div class="admin-title">⚙ Beheerpaneel <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-left:8px;">v16</span> <button class="logoutbtn" onclick="logout()">uitloggen</button></div>
+    <div class="admin-title">⚙ Beheerpaneel <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-left:8px;">v18</span> <button class="logoutbtn" onclick="logout()">uitloggen</button></div>
     <button class="back-btn" onclick="closeAdmin()">← Terug</button>
   </div>
   <div class="tabs">
@@ -516,27 +520,39 @@ function fmtD(d){return DK[d.getDay()]+' '+d.getDate()+'/'+String(d.getMonth()+1
 /* DEFAULT DATA */
 const DEFT={
   team:[
-    {i:'TD',n:'Tom Dewaele',r:'Zaakvoerder',av:'av-b',type:'v',da:[{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
-    {i:'MD',n:'Milan De Clercq',r:'Administratie',av:'av-t',type:'v',da:[{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
-    {i:'TW',n:'Tessa Willaert',r:'Accountant',av:'av-p',type:'v',da:[{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
-    {i:'DS',n:'Daphné Sweetlove',r:'Accountant',av:'av-c',type:'v',da:[{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
-    {i:'LD',n:'Lisa Dierckx',r:'ITAA freelance',av:'av-a',type:'f',da:[{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'thuis',av:'ja'}]},
-    {i:'SR',n:'Stephanie Rogge',r:'Stagiair freelance',av:'av-t',type:'f',da:[{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'thuis',av:'ja'}]},
-    {i:'LG',n:'Lindsay Gryson',r:'Stagiair freelance',av:'av-p',type:'f',da:[{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'thuis',av:'ja'}]},
-    {i:'CD',n:'Chris Deceuninck',r:'ITAA freelance',av:'av-b',type:'f',da:[{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'thuis',av:'beperkt'},{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'}]},
-    {i:'SA',n:'Souliman Ahankour',r:'Medewerker freelance',av:'av-a',type:'f',da:[{aan:1,loc:'kantoor',av:'ja'},{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'kantoor',av:'ja'}]},
+    {i:'TD',n:'Tom Dewaele',r:'Zaakvoerder',av:'av-b',type:'v',da:[
+      {aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
+    {i:'MD',n:'Milan De Clercq',r:'Administratie',av:'av-t',type:'v',da:[
+      {aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
+    {i:'TW',n:'Tessa Willaert',r:'Accountant',av:'av-p',type:'v',da:[
+      {aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
+    {i:'DS',n:'Daphné Sweetlove',r:'Accountant',av:'av-c',type:'v',da:[
+      {aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
+    {i:'LD',n:'Lisa Dierckx',r:'ITAA freelance',av:'av-a',type:'f',da:[
+      {aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'thuis',av:'ja'}]},
+    {i:'SR',n:'Stephanie Rogge',r:'Stagiair freelance',av:'av-t',type:'f',da:[
+      {aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'thuis',av:'ja'}]},
+    {i:'LG',n:'Lindsay Gryson',r:'Stagiair freelance',av:'av-p',type:'f',da:[
+      {aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:1,loc:'thuis',av:'ja'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'thuis',av:'ja'}]},
+    {i:'CD',n:'Chris Deceuninck',r:'ITAA freelance',av:'av-b',type:'f',da:[
+      {aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'thuis',av:'beperkt'},{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'}]},
+    {i:'SA',n:'Souliman Ahankour',r:'Medewerker freelance',av:'av-a',type:'f',da:[
+      {aan:1,loc:'kantoor',av:'ja'},{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'},{aan:0,loc:'thuis',av:'nee'},{aan:1,loc:'kantoor',av:'ja'}]},
+    {i:'TG',n:'Thibaut George',r:'Stagiair',av:'av-t',type:'v',da:[
+      {aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'},{aan:1,loc:'kantoor',av:'ja'}]},
   ],
   taken:[
-    {t:'BTW april afronden',w:'Tessa + Daphné',done:false},
-    {t:'Dossiers 30/09 afwerken',w:'Lisa + Lindsay',done:false},
-    {t:'Nieuwe stagiair onboarden',w:'Tom + Milan',done:false},
-    {t:'Nieuwe tarieven doorvoeren',w:'Tom',done:false},
+    {t:'BTW maand afronden',w:'Tessa + Daphné',done:false},
+    {t:'Dossiers opvolging',w:'Lisa + Lindsay',done:false},
     {t:'Mailbox opvolging klanten',w:'Milan',done:false},
+    {t:'Kwaliteitsmonitor opvolging',w:'Team',done:false},
+    {t:'Nieuwe tarieven doorvoeren',w:'Tom',done:false},
   ],
   projecten:[
     {naam:'Classificatie klantenportfolio',wie:'Tom',pct:40},
-    {naam:'Invoering nieuwe tarieven',wie:'Tom',pct:20},
+    {naam:'Invoering nieuwe tarieven',wie:'Tom + Milan',pct:20},
     {naam:'Rekrutering nieuw personeel',wie:'Tom',pct:10},
+    {naam:'Silverfin Assistant installatie',wie:'Tom + Team',pct:0},
   ],
   planning:{},
   dagOverrides:{},
@@ -722,8 +738,12 @@ function renderTeam(){
 
   // Locatie teller
   let thtml='';
+  const nVm=ss2.filter(s=>s.aan&&s.av==='vm').length;
+  const nNm=ss2.filter(s=>s.aan&&s.av==='nm').length;
   if(nK)thtml+=`<span class="lt-item"><div class="lt-dot" style="background:var(--accent);"></div><span style="color:var(--accent);">${nK} kantoor</span></span>`;
   if(nT)thtml+=`<span class="lt-item"><div class="lt-dot" style="background:var(--purple);"></div><span style="color:var(--purple);">${nT} thuis</span></span>`;
+  if(nVm)thtml+=`<span class="lt-item"><div class="lt-dot" style="background:var(--accent);opacity:.5;"></div><span style="color:var(--muted);">${nVm} vm</span></span>`;
+  if(nNm)thtml+=`<span class="lt-item"><div class="lt-dot" style="background:var(--purple);opacity:.5;"></div><span style="color:var(--muted);">${nNm} nm</span></span>`;
   if(nA)thtml+=`<span class="lt-item"><div class="lt-dot" style="background:var(--muted);"></div><span>${nA} afwezig</span></span>`;
   document.getElementById('locteller').innerHTML=thtml;
 
@@ -731,8 +751,9 @@ function renderTeam(){
     const s=ss2[mi];
     const loclbl=!s.aan?'afwezig':s.loc;
     const loccls=!s.aan?'la':(s.loc==='thuis'?'lt':'lk');
-    const avdotcls=!s.aan?'an':(s.av==='nee'?'an':s.av==='beperkt'?'ab':'ay');
-    const avlbl=!s.aan?'afwezig':s.av==='nee'?'niet beschikbaar':s.av==='beperkt'?'beperkt':'beschikbaar';
+    const avdotcls=!s.aan?'an':(s.av==='nee'?'an':s.av==='beperkt'?'ab':s.av==='vm'?'avm':s.av==='nm'?'anm':'ay');
+    const avlbl=!s.aan?'afwezig':s.av==='nee'?'niet beschikbaar':s.av==='beperkt'?'beperkt':s.av==='vm'?'voormiddag':s.av==='nm'?'namiddag':'beschikbaar';
+    const avExtra=s.aan&&(s.av==='vm'||s.av==='nm')?`<span class="av-time ${s.av==='vm'?'av-time-vm':'av-time-nm'}">${s.av}</span>`:'';
     return`<div class="mrow${s.aan?'':' absent'}" title="${m.n} — ${m.r} — ${loclbl} — ${avlbl}">
       <div class="av ${m.av||'av-b'}">${m.i}</div>
       <div class="minfo">
@@ -741,6 +762,7 @@ function renderTeam(){
       </div>
       <div class="mright">
         <span class="lbadge ${loccls}">${loclbl}</span>
+        ${avExtra}
         <span class="mtype ${m.type==='v'?'tv2':'tf2'}">${m.type==='v'?'vast':'free'}</span>
         <div class="avdot ${avdotcls}"></div>
       </div>
@@ -936,6 +958,8 @@ function rAPlanning(){
         </select>
         <select class="asel" style="width:110px;font-size:10px;" ${!hAan?'disabled':''} onchange="setDO('${key}',${mi},'av',this.value)">
           <option value="ja"${hAv==='ja'?' selected':''}>Beschikbaar</option>
+          <option value="vm"${hAv==='vm'?' selected':''}>Voormiddag</option>
+          <option value="nm"${hAv==='nm'?' selected':''}>Namiddag</option>
           <option value="beperkt"${hAv==='beperkt'?' selected':''}>Beperkt</option>
           <option value="nee"${hAv==='nee'?' selected':''}>Niet beschikbaar</option>
         </select>
@@ -1038,6 +1062,8 @@ function rATeam(){
         </select>
         <select class="asel" style="width:135px;" ${!d.aan?'disabled':''} onchange="team[${mi}].da[${di}].av=this.value">
           <option value="ja"${d.av==='ja'?' selected':''}>Beschikbaar</option>
+          <option value="vm"${d.av==='vm'?' selected':''}>Voormiddag</option>
+          <option value="nm"${d.av==='nm'?' selected':''}>Namiddag</option>
           <option value="beperkt"${d.av==='beperkt'?' selected':''}>Beperkt</option>
           <option value="nee"${d.av==='nee'?' selected':''}>Niet beschikbaar</option>
         </select>
